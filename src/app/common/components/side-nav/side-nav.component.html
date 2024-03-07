@@ -1,17 +1,20 @@
 
-<button (click)="toggleSidebar()" data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" class="absolute inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+<button (click)="toggleSidebar()" data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" class=" z-30 absolute inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
     <span class="sr-only">Open sidebar</span>
     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
     <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
     </svg>
  </button>
- 
- <aside id="separator-sidebar" [ngClass]="{'-translate-x-0': showSideBar, '-translate-x-full': !showSideBar}" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform sm:translate-x-0" aria-label="Sidebar">
-    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+ <aside id="separator-sidebar" class="{{showSideBar ? '-translate-x-0' : '-translate-x-full'}} fixed top-0 left-0 z-40 w-64 h-screen transition-transform sm:translate-x-0" aria-label="Sidebar">
+    <div class="h-full shadow-2xl px-3 py-4 overflow-y-auto bg-white dark:bg-gray-800">
        <div class="h-full flex flex-col justify-between">
         <div>
-            <div class="flex justify-center mb-2 h-8">
-                <img style="border-radius: 5px;" src="/assets/logo.png" />
+            <div class="flex min-w-0 gap-x-4 mb-8">
+                <img class="h-12 w-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                <div class="min-w-0 flex-auto">
+                  <p class="text-sm font-semibold leading-6 text-gray-900">Leslie Alexander</p>
+                  <p class="mt-1 truncate text-xs leading-5 text-gray-500">leslie.alexander.com</p>
+                </div>
             </div>
             <ul class="space-y-2 font-medium">
                 <li>
@@ -74,17 +77,6 @@
         <div>
             <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
                 <li>
-                    <a>
-                        <div class="flex min-w-0 gap-x-4">
-                            <img class="h-12 w-12 flex-none rounded-full bg-gray-50" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
-                            <div class="min-w-0 flex-auto">
-                              <p class="text-sm font-semibold leading-6 text-gray-900">Leslie Alexander</p>
-                              <p class="mt-1 truncate text-xs leading-5 text-gray-500">leslie.alexander.com</p>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
                     <a [routerLink]="'/settings'" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <app-svg-icon [icon]="'settings'"></app-svg-icon>
                         <span class="flex-1 ms-3 whitespace-nowrap">Settings</span>
@@ -102,7 +94,7 @@
     </div>
  </aside>
  
- <div class="full-screen sm:hidden" *ngIf="showSideBar" (click)="toggleSidebar()">
+ <div class="full-screen z-20 sm:hidden" *ngIf="showSideBar" (click)="toggleSidebar()">
     
  </div>
  
