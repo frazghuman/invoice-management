@@ -1,2 +1,7 @@
 <app-page-header [heading]="'Bill list'" [heading2]="'Bills'" [buttonLabel]="'Bill'" [showActionButton]="false"></app-page-header>
 <!-- <app-confirm-dialog [showDialog]="true"></app-confirm-dialog> -->
+<div class="my-4 mx-12 mt-16">
+    <button pButton type="button" class="primary" label="Click"></button>
+    <p-button  (click)="menu.toggle($event)" label="Submit" icon="pi pi-check" iconPos="right"></p-button>
+    <p-menu #menu [model]="items" [popup]="true"></p-menu>
+</div>

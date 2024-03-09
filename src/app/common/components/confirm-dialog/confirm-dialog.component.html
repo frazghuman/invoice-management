@@ -1,5 +1,5 @@
 @if (showDialog) {
-    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <!--
           Background backdrop, show/hide based on modal state.
       
@@ -12,7 +12,7 @@
         -->
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       
-        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="fixed inset-0 z-50 w-screen overflow-y-auto">
           <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <!--
               Modal panel, show/hide based on modal state.
@@ -36,6 +36,11 @@
                     <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Deactivate account</h3>
                     <div class="mt-2">
                       <p class="text-sm text-gray-500">Are you sure you want to deactivate your account? All of your data will be permanently removed. This action cannot be undone.</p>
+                    </div>
+                    <div class="mt-2">
+                      <pre>
+                        {{data | json}}
+                      </pre>
                     </div>
                   </div>
                 </div>

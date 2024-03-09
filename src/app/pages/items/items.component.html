@@ -1,1 +1,86 @@
 <app-page-header [heading]="'Item list'" [heading2]="'Items'" [buttonLabel]="'Item'"></app-page-header>
+<app-confirm-dialog [showDialog]="showUpdateDialog" (hide)="onHideUpdateDialog($event)" [data]="selectedItem"></app-confirm-dialog>
+<div class="my-4 mx-12 mt-16 flex justify-center">
+    <ul role="list" class="divide-y divide-gray-100 lg:w-3/4"
+        *ngIf="paginator$ | async as paginator"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="50"
+        (scrolled)="loadMoreItems(paginator)">
+        
+        @for (item of paginator.products; track item.id; let  i = $index) {
+            <li class="flex justify-between gap-x-6 py-5">
+                <div class="flex min-w-0 gap-x-4">
+                    <img class="h-12 w-12 flex-none rounded-full bg-gray-50" [src]="item.thumbnail" alt="">
+                    <div class="min-w-0 flex-auto">
+                    <p class="text-sm font-semibold leading-6 text-gray-900">{{ item.title }}</p>
+                    <p class="mt-1 truncate text-xs leading-5 text-gray-500">Lot no. {{ item.id }}</p>
+                    </div>
+                </div>
+                <div class="flex flex-row items-center">
+                    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
+                        <p class="text-sm leading-6 text-gray-900">Total Stock</p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500"><span class="font-semibold">{{item.stock}}</span></p>
+                    </div>
+                    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end ml-12">
+                        <p class="text-sm leading-6 text-gray-900">Price</p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500">{{ item.price | currency }}</p>
+                    </div>
+                    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end ml-12">
+                        <p class="text-sm leading-6 text-gray-900">Unit</p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500">item</p>
+                    </div>
+                    <div class="ml-4">
+                        <span (click)="generateMenuItems(item, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
+                        <p-menu #menu [model]="actionItems" [popup]="true"></p-menu>
+                    </div>
+                </div>
+            </li>
+        } @empty {
+            Empty list of users
+        }
+        @if (loading$ | async) {
+            <li class="flex justify-between gap-x-6 py-5">
+                <div role="status" class="w-full p-4 space-y-4 divide-y divide-gray-200 animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        </div>
+                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4">
+                        <div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        </div>
+                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4">
+                        <div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        </div>
+                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4">
+                        <div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        </div>
+                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                    </div>
+                    <div class="flex items-center justify-between pt-4">
+                        <div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        </div>
+                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                    </div>
+                    <span class="sr-only">Loading...</span>
+                </div>                     
+            </li>
+        }
+    </ul>    
+</div>
+  

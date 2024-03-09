@@ -5,4 +5,3 @@ export default interface User {
     address: string;
     additionalInformation: string;
   }
-  

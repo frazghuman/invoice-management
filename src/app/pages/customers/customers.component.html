@@ -1,5 +1,6 @@
 <app-page-header [heading]="'Customer list'" [heading2]="'Customers'" [buttonLabel]="'Customer'"></app-page-header>
-<div class="my-4 mx-12 mt-16">
+<app-confirm-dialog [showDialog]="showUpdateDialog" (hide)="onHideUpdateDialog($event)" [data]="selectedCustomer"></app-confirm-dialog>
+<div class="my-4 mx-12 mt-16 flex justify-center">
     <ul role="list" class="divide-y divide-gray-100 lg:w-3/4"
         *ngIf="paginator$ | async as paginator"
         infiniteScroll
@@ -7,7 +8,7 @@
         [infiniteScrollThrottle]="50"
         (scrolled)="loadMoreCustomers(paginator)">
         
-        @for (customer of paginator.customers; track customer.id) {
+        @for (customer of paginator.customers; track customer.id; let  i = $index) {
             <li class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
                     <img class="h-12 w-12 flex-none rounded-full bg-gray-50" [src]="customer.image" alt="">
@@ -26,7 +27,8 @@
                         <p class="mt-1 text-xs leading-5 text-gray-500">{{customer.birthDate | date:'d MMM, y'}} </p>
                     </div>
                     <div class="ml-4">
-                        <span class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
+                        <span (click)="generateMenuItems(customer, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
+                        <p-menu #menu [model]="actionItems" [popup]="true"></p-menu>
                     </div>
                 </div>
             </li>
