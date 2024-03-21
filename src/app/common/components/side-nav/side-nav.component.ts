@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SvgIconComponent } from '../svg-icon/svg-icon.component';
 import { RouterModule } from '@angular/router';
 
@@ -10,9 +10,13 @@ import { RouterModule } from '@angular/router';
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.scss'
 })
-export class SideNavComponent {
+export class SideNavComponent implements OnInit {
   showSideBar: boolean = false;
   toggleSidebar() {
     this.showSideBar = !this.showSideBar;
+  }
+
+  ngOnInit() {
+    this.showSideBar = false;
   }
 }

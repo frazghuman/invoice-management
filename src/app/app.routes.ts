@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginLayoutComponent } from '@common/components/layout/login-layout/login-layout.component';
 import { MainLayoutComponent } from '@common/components/layout/main-layout/main-layout.component';
 import { BillComponent } from '@pages/bill/bill.component';
+import { ContactUsComponent } from '@pages/contact-us/contact-us.component';
 import { CustomersComponent } from '@pages/customers/customers.component';
 import { DashboardComponent } from '@pages/dashboard/dashboard.component';
 import { InvoiceComponent } from '@pages/invoice/invoice.component';
@@ -24,6 +25,7 @@ export const routes: Routes = [
         { path: 'items', component: ItemsComponent },
         { path: 'reports', component: ReportsComponent },
         { path: 'settings', component: SettingsComponent },
+        { path: 'contact-us', component: ContactUsComponent },
         { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
       ],
     },
