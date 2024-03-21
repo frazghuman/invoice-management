@@ -1,86 +1,150 @@
-<app-page-header [heading]="'Item list'" [heading2]="'Items'" [buttonLabel]="'Item'"></app-page-header>
-<app-confirm-dialog [showDialog]="showUpdateDialog" (hide)="onHideUpdateDialog($event)" [data]="selectedItem"></app-confirm-dialog>
-<div class="my-4 mx-12 mt-16 flex justify-center">
-    <ul role="list" class="divide-y divide-gray-100 lg:w-3/4"
-        *ngIf="paginator$ | async as paginator"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollThrottle]="50"
-        (scrolled)="loadMoreItems(paginator)">
-        
-        @for (item of paginator.products; track item.id; let  i = $index) {
-            <li class="flex justify-between gap-x-6 py-5">
-                <div class="flex min-w-0 gap-x-4">
-                    <img class="h-12 w-12 flex-none rounded-full bg-gray-50" [src]="item.thumbnail" alt="">
-                    <div class="min-w-0 flex-auto">
-                    <p class="text-sm font-semibold leading-6 text-gray-900">{{ item.title }}</p>
-                    <p class="mt-1 truncate text-xs leading-5 text-gray-500">Lot no. {{ item.id }}</p>
-                    </div>
-                </div>
-                <div class="flex flex-row items-center">
-                    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <p class="text-sm leading-6 text-gray-900">Total Stock</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500"><span class="font-semibold">{{item.stock}}</span></p>
-                    </div>
-                    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end ml-12">
-                        <p class="text-sm leading-6 text-gray-900">Price</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500">{{ item.price | currency }}</p>
-                    </div>
-                    <div class="hidden shrink-0 sm:flex sm:flex-col sm:items-end ml-12">
-                        <p class="text-sm leading-6 text-gray-900">Unit</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500">item</p>
-                    </div>
-                    <div class="ml-4">
-                        <span (click)="generateMenuItems(item, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
-                        <p-menu #menu [model]="actionItems" [popup]="true"></p-menu>
-                    </div>
-                </div>
-            </li>
-        } @empty {
-            Empty list of users
-        }
-        @if (loading$ | async) {
-            <li class="flex justify-between gap-x-6 py-5">
-                <div role="status" class="w-full p-4 space-y-4 divide-y divide-gray-200 animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
-                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+<app-page-header [heading]="'Item list'" [heading2]="'Items'" [buttonLabel]="'Item'" (addClick)="onAddItem($event)"></app-page-header>
+<app-item-form [showDialog]="showUpdateDialog" (hide)="onHideUpdateDialog($event)" [data]="selectedItem"></app-item-form>
+<div class="w-full flex justify-center">
+    <div class="my-4 mt-16 flex flex-col xl:w-3/4 w-full justify-center">
+        <div class="flex w-full items-center justify-between">
+            <div class="flex pl-4 mr-2">
+                <span class="text-sm font-semibold uppercase mr-2 text-nowrap">Sort By:</span> <span class="material-icons cursor-pointer" (click)="sortOptionsMenu.toggle($event)">filter_alt</span>
+                <p-menu #sortOptionsMenu [model]="sortOptions" [popup]="true" appendTo="body"></p-menu>
+            </div>
+            <div class="flex items-center md:w-1/2 pr-4">
+                <button (click)="onSearchClick()" type="button" class="flex overflow-hidden text-nowrap h-8 w-full items-center gap-2 rounded-full bg-white pl-2 pr-3 text-sm text-zinc-500 ring-1 ring-zinc-900/10 transition hover:ring-zinc-900/20 ui-not-focus-visible:outline-none lg:flex dark:bg-white/5 dark:text-zinc-400 dark:ring-inset dark:ring-white/10 dark:hover:ring-white/20">
+                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" class="h-5 w-5 stroke-current min-w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12.01 12a4.25 4.25 0 1 0-6.02-6 4.25 4.25 0 0 0 6.02 6Zm0 0 3.24 3.25"></path>
+                    </svg>
+                    <input class="w-full" type="text" placeholder="Find something..." />
+                    <kbd class="text-2xs text-zinc-400 dark:text-zinc-500">
+                        <kbd class="font-sans">Ctrl </kbd>
+                        <kbd class="font-sans">K</kbd>
+                    </kbd>
+                </button>
+            </div>
+        </div>
+        <ul role="list" class="divide-y divide-gray-100"
+            *ngIf="paginator$ | async as paginator"
+            infiniteScroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="50"
+            (scrolled)="loadMoreItems(paginator)">
+            
+            @for (item of paginator.products; track item.id; let  i = $index) {
+                <li class="flex justify-between gap-x-6 py-5 cursor-pointer" (click)="expandStockDetail[i] = !expandStockDetail[i]">
+                    <div class="flex min-w-0 gap-x-4">
+                        <div class="h-12 w-12 cursor-pointer flex justify-center items-center rounded-full" [pTooltip]="!!expandStockDetail[i] ? 'Hide details': 'Show detials'" tooltipPosition="top">
+                            <span class="material-icons">
+                                {{!!expandStockDetail[i] ? 'expand_more' : 'expand_less'}}
+                            </span>
                         </div>
-                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
-                    </div>
-                    <div class="flex items-center justify-between pt-4">
-                        <div>
-                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
-                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        <div class="min-w-0 flex-auto">
+                        <p class="text-sm font-semibold leading-6 text-gray-900">{{ item.title }}</p>
+                        <p class="hidden mt-1 truncate text-xs leading-5 text-gray-500">Lot no. {{ item.id }}</p>
+                        <p class="sm:hidden mt-1 truncate text-xs leading-5 text-gray-500">
+                            <span class="text-sm">Total Stock </span><span class="font-semibold">{{item.stock}}</span>
+                            , <span class="text-sm">Price </span><span class="font-semibold">{{ item.price | currency }} </span>
+                            <span class="text-sm">/ </span><span class="font-semibold">Carton</span></p>
                         </div>
-                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
                     </div>
-                    <div class="flex items-center justify-between pt-4">
-                        <div>
-                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
-                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                    <div class="flex flex-row items-center">
+                        <div class="hidden shrink-0 w-20 sm:flex sm:flex-col sm:items-end">
+                            <p class="text-sm leading-6 text-gray-900">Unit</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-500">item</p>
                         </div>
-                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
-                    </div>
-                    <div class="flex items-center justify-between pt-4">
-                        <div>
-                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
-                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        <div class="hidden shrink-0 w-20 sm:flex sm:flex-col sm:items-end ml-4">
+                            <p class="text-sm leading-6 text-gray-900">Total Stock</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-500"><span class="font-semibold">{{item.stock}}</span></p>
                         </div>
-                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
-                    </div>
-                    <div class="flex items-center justify-between pt-4">
-                        <div>
-                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
-                            <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                        <div class="hidden shrink-0 w-20 sm:flex sm:flex-col sm:items-end ml-4">
+                            <p class="text-sm leading-6 text-gray-900">Price</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-500">{{ item.price | currency }}</p>
                         </div>
-                        <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                        <div class="mx-4">
+                            <span (click)="generateMenuItems($event, item, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
+                            <p-menu #menu [model]="actionItems" [popup]="true"></p-menu>
+                        </div>
                     </div>
-                    <span class="sr-only">Loading...</span>
-                </div>                     
-            </li>
-        }
-    </ul>    
+                </li>
+                <li *ngIf="!!expandStockDetail[i]" @fadeInOut class="flex flex-col justify-end gap-x-6 md:ml-10 py-5 bg-zinc-100 overflow-x-auto scroll-container">
+                    <div class="flex w-fit flex-row justify-start items-start mx-6 border-b-2 border-zinc-200">
+                        <div class="shrink-0 w-16 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Lot no.</p>
+                        </div>
+                        <div class="shrink-0 w-28 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Available Stock</p>
+                        </div>
+                        <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Price</p>
+                        </div>
+                        <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Stock Date</p>
+                        </div>
+                        <div class="shrink-0 w-auto sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Description</p>
+                        </div>
+                    </div>
+                    <div class="flex w-fit flex-row justify-start items-center mx-6 border-b-2 border-zinc-200">
+                        <div class="shrink-0 w-16 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 truncate text-xs leading-5 text-gray-800">{{ item.id }}</p>
+                        </div>
+                        <div class="shrink-0 w-28 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 text-xs leading-5 text-gray-800"><span class="font-semibold">{{item.stock}}</span></p>
+                        </div>
+                        <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 text-xs leading-5 text-gray-800">{{ item.price | currency }}</p>
+                        </div>
+                        <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 truncate text-xs leading-5 text-gray-800">20/03/2024</p>
+                        </div>
+                        <div class="shrink-0 w-auto sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="w-[22rem] max-w-full mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="dummyText" [limit]="45"></p>
+                        </div>
+                    </div>
+                </li>
+            } @empty {
+                Empty list of users
+            }
+            @if (loading$ | async) {
+                <li class="flex justify-between gap-x-6 py-5">
+                    <div role="status" class="w-full p-4 space-y-4 divide-y divide-gray-200 animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-600 w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-700"></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full dark:bg-gray-700 w-12"></div>
+                        </div>
+                        <span class="sr-only">Loading...</span>
+                    </div>                     
+                </li>
+            }
+        </ul>    
+    </div>
 </div>
   

@@ -1,6 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
 @import './tailwind.css';
 
+// Define breakpoints as variables for reuse and maintainability
+$breakpoint-md: 768px;
+
+// Utilize SCSS nesting and the @media query inside the class for clarity
+.content-width{
+  width: 100%; // Default mobile style
+
+  // Media query for screens larger than mobile, using the variable
+  @media (min-width: $breakpoint-md) {
+    width: calc(100% - 16rem); // This applies for screens larger than 768px
+  }
+}
+
 /* width */
 ::-webkit-scrollbar {
     scrollbar-width: thin;
@@ -21,3 +34,28 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+  
+  /* Styling for WebKit-based browsers */
+  .scroll-container::-webkit-scrollbar {
+    height: 4px; /* Height of the scrollbar */
+  }
+  
+  .scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+  }
+  
+  .scroll-container::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar itself */
+  }
+  
+  /* Hover effect for the scrollbar thumb */
+  .scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  /* Firefox */
+  .scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1; /* Thumb and track color */
+  }
+  
