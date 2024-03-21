@@ -6,6 +6,16 @@
     position: absolute;
 }
 
+.backdrop {
+    position: fixed; /* or absolute */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.4;
+}
+
 .h-screen {
     height: 100dvh;
 }

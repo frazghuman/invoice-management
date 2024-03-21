@@ -59,3 +59,7 @@ $breakpoint-md: 768px;
     scrollbar-color: #888 #f1f1f1; /* Thumb and track color */
   }
   
+  .no-scroll {
+    overflow: hidden;
+    height: 100%;
+  }

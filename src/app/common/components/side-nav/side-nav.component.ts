@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { SvgIconComponent } from '../svg-icon/svg-icon.component';
 import { RouterModule } from '@angular/router';
 
@@ -11,9 +11,11 @@ import { RouterModule } from '@angular/router';
   styleUrl: './side-nav.component.scss'
 })
 export class SideNavComponent implements OnInit {
+  @Output() sideBarState = new EventEmitter<boolean>(false);
   showSideBar: boolean = false;
   toggleSidebar() {
     this.showSideBar = !this.showSideBar;
+    this.sideBarState.emit(this.showSideBar);
   }
 
   ngOnInit() {
