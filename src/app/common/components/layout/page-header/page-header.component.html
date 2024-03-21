@@ -2,19 +2,19 @@
     <div class="flex flex-row w-3/4">
         <h1 class="pl-12 sm:pl-0 sm:mr-12 text-xl text-gray-800 font-bold"><span class="hidden md:block text-nowrap">{{heading}}</span><span class="sm:hidden text-nowrap">{{heading2}}</span></h1>
         <div class="sm:hidden flex items-center">
-            <button (click)="onSearchClick()" type="button" class="ml-4 overflow-hidden text-nowrap h-8 w-full items-center gap-2 rounded-full bg-white pl-2 pr-2 text-sm text-zinc-500 ring-1 ring-zinc-900/10 transition hover:ring-zinc-900/20 ui-not-focus-visible:outline-none lg:flex dark:bg-white/5 dark:text-zinc-400 dark:ring-inset dark:ring-white/10 dark:hover:ring-white/20">
+            <button (click)="onSearchClick()" type="button" class="ml-4 overflow-hidden text-nowrap h-8 w-full items-center gap-2 rounded-full bg-white pl-2 pr-2 text-sm text-zinc-500 ring-1 ring-zinc-900/10 transition hover:ring-zinc-900/20 ui-not-focus-visible:outline-none lg:flex ">
                 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" class="h-5 w-5 stroke-current">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12.01 12a4.25 4.25 0 1 0-6.02-6 4.25 4.25 0 0 0 6.02 6Zm0 0 3.24 3.25"></path>
                 </svg>
             </button>
         </div>
         <div class=" hidden md:flex items-center w-1/2">
-            <button (click)="onSearchClick()" type="button" class="flex overflow-hidden text-nowrap h-8 w-full items-center gap-2 rounded-full bg-white pl-2 pr-3 text-sm text-zinc-500 ring-1 ring-zinc-900/10 transition hover:ring-zinc-900/20 ui-not-focus-visible:outline-none lg:flex dark:bg-white/5 dark:text-zinc-400 dark:ring-inset dark:ring-white/10 dark:hover:ring-white/20">
+            <button (click)="onSearchClick()" type="button" class="flex overflow-hidden text-nowrap h-8 w-full items-center gap-2 rounded-full bg-white pl-2 pr-3 text-sm text-zinc-500 ring-1 ring-zinc-900/10 transition hover:ring-zinc-900/20 ui-not-focus-visible:outline-none lg:flex ">
                 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" class="h-5 w-5 stroke-current min-w-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12.01 12a4.25 4.25 0 1 0-6.02-6 4.25 4.25 0 0 0 6.02 6Zm0 0 3.24 3.25"></path>
                 </svg>
                 Find something...
-                <kbd class="ml-auto text-2xs text-zinc-400 dark:text-zinc-500">
+                <kbd class="ml-auto text-2xs text-zinc-400">
                     <kbd class="font-sans">Ctrl </kbd>
                     <kbd class="font-sans">K</kbd>
                 </kbd>
@@ -22,10 +22,10 @@
         </div>
     </div>
     <div>
-        <a *ngIf="showActionButton" (click)="onAddClick()" class="cursor-pointer inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-900 py-1 px-3 text-white hover:bg-zinc-700 dark:bg-emerald-400/10 dark:text-emerald-400 dark:ring-1 dark:ring-inset dark:ring-emerald-400/20 dark:hover:bg-emerald-400/10 dark:hover:text-emerald-300 dark:hover:ring-emerald-300" ><span>{{buttonLabel}}</span> <span class="material-icons">add</span></a>
+        <a *ngIf="showActionButton" (click)="onAddClick()" class="cursor-pointer inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-900 py-1 px-3 text-white hover:bg-zinc-700 " ><span>{{buttonLabel}}</span> <span class="material-icons">add</span></a>
     </div>
 </nav>
-<div class="fixed w-full top-0 left-0  mt-16 inset-x-0 h-px transition bg-zinc-900 opacity-15 dark:bg-white "></div>
+<div class="fixed w-full top-0 left-0  mt-16 inset-x-0 h-px transition bg-zinc-900 opacity-15"></div>
 <div class="flex items-center justify-end my-4 mx-12">
     <ul class="flex items-center space-x-6">
       <li class="font-semibold text-gray-700">
