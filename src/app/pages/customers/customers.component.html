@@ -31,15 +31,24 @@
         (scrolled)="loadMoreCustomers(paginator)">
         
         @for (customer of paginator.customers; track customer.id; let  i = $index) {
-            <li class="flex justify-between gap-x-6 px-3 py-5">
+            <li class="flex justify-between gap-x-6 px-3 py-5 cursor-pointer" (click)="expandCustomerDetail[i] = !expandCustomerDetail[i]">
                 <div class="flex min-w-0 gap-x-4">
-                    <img class="h-12 w-12 flex-none rounded-full bg-gray-50" [src]="customer.image" alt="">
+                    <div class="h-12 w-12 cursor-pointer flex justify-center items-center rounded-full" [pTooltip]="!!expandCustomerDetail[i] ? 'Hide details': 'Show detials'" tooltipPosition="top">
+                        <span class="material-icons">
+                            {{!!expandCustomerDetail[i] ? 'expand_more' : 'expand_less'}}
+                        </span>
+                    </div>
                     <div class="min-w-0 flex-auto">
                     <p class="text-sm font-semibold leading-6 text-gray-900">{{ customer.firstName }} {{ customer.lastName }}</p>
-                    <p class="mt-1 truncate text-xs leading-5 text-gray-500">
+                    <p class="hidden sm:flex items-center mt-1 truncate text-xs leading-5 text-gray-500">
                         <span class="text-sm leading-6 text-gray-900">Address: </span>
-                        {{ customer.address.address }}</p>
+                        {{ customer.address.address }}
+                    </p>
+                    <p class="sm:hidden mt-1 truncate text-xs leading-5 text-gray-500">
+                        <a [href]="'tel:'+customer.phone">{{customer.phone}}</a>
+                    </p>
                     </div>
+                    
                 </div>
                 <div class="flex flex-row items-center">
                     <div class="hidden shrink-0 w-28 sm:flex sm:flex-col sm:items-start">
@@ -55,8 +64,40 @@
                         <p class="mt-1 text-xs leading-5 text-gray-500">{{customer.birthDate | date:'d MMM, y'}} </p>
                     </div>
                     <div class="ml-4">
-                        <span (click)="generateMenuItems(customer, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
+                        <span (click)="generateMenuItems($event, customer, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
                         <p-menu #menu [model]="actionItems" [popup]="true"></p-menu>
+                    </div>
+                </div>
+            </li>
+            <li *ngIf="!!expandCustomerDetail[i]" @fadeInOut class="flex flex-col justify-end gap-x-6 md:ml-10 py-5 bg-zinc-100 overflow-x-auto scroll-container">
+                <div class="flex flex-col w-fit">
+                    <div class="flex w-full flex-row justify-start items-start mx-6 border-b-2 border-zinc-200">
+                        <div class="shrink-0 w-28 sm:hidden flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Email</p>
+                        </div>
+                        <div class="shrink-0 w-28 lg:hidden flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Created Date</p>
+                        </div>
+                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Address</p>
+                        </div>
+                        <div class="shrink-0 w-auto sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Additional Information</p>
+                        </div>
+                    </div>
+                    <div class="flex w-full flex-row justify-start items-center mx-6 border-b-2 border-zinc-200">
+                        <div class="shrink-0 w-28 sm:hidden flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 text-xs leading-5 text-gray-800">{{'alphabet@abc.com'}}</p>
+                        </div>
+                        <div class="shrink-0 w-28 lg:hidden flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 truncate text-xs leading-5 text-gray-800">20/03/2024</p>
+                        </div>
+                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="customer.address.address" [limit]="45"></p>
+                        </div>
+                        <div class="shrink-0 w-auto sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="w-[22rem] max-w-full mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="dummyText" [limit]="45"></p>
+                        </div>
                     </div>
                 </div>
             </li>

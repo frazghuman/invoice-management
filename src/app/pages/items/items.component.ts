@@ -15,6 +15,7 @@ import { ItemsPaginator } from '@common/interfaces/items.interface';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ItemFormComponent } from './item-form/item-form.component';
 import { ShowMoreDirective } from '@common/directives/show-more.directive';
+import fadeInOutAnimation from '@common/animations/fade-in-out.animation';
 
 @Component({
   selector: 'app-items',
@@ -32,19 +33,7 @@ import { ShowMoreDirective } from '@common/directives/show-more.directive';
   templateUrl: './items.component.html',
   styleUrl: './items.component.scss',
   animations: [
-    trigger('fadeInOut', [
-      state('void', style({
-        opacity: 0,
-        height: '0px', // Start from 0 height
-        overflowY: 'hidden'
-      })),
-      state('*', style({
-        opacity: 1,
-        height: '*', // Allow dynamic height
-        overflowY: 'hidden'
-      })),
-      transition('void <=> *', animate('50ms ease-in-out')),
-    ]),
+    fadeInOutAnimation,
   ]
 })
 export class ItemsComponent {
