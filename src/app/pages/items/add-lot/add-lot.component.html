@@ -31,7 +31,7 @@
             <div class="col-span-full flex flex-row max-sm:flex-col w-full items-center">
                 <label for="unit-type" class="pr-4 w-full sm:w-1/2 block text-sm text-left sm:text-right font-medium leading-6 text-gray-900">Unit Type*</label>
                 <div class="mt-2 w-full sm:w-1/2">
-                    <select id="unit-type" name="unit-type" formControlName="unitType" autocomplete="unit-type" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <select id="unit-type" name="unit-type" formControlName="unitType" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <option *ngFor="let type of unitTypes" [value]="type">{{type}}</option>
                     </select>
                 </div>
