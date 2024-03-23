@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { BackdropService } from '@common/services/signals/backdrop.service';
 
 @Component({
   selector: 'app-page-header',
@@ -9,6 +10,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   styleUrl: './page-header.component.scss'
 })
 export class PageHeaderComponent {
+  backDropService = inject(BackdropService);
   @Input() heading!: string;
   @Input() heading2!: string;
   @Input() buttonLabel!: string;
@@ -22,6 +24,7 @@ export class PageHeaderComponent {
   }
 
   onAddClick() {
+    this.backDropService.set('visible', true);
     this.addClick.emit();
   }
 }

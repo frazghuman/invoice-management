@@ -35,6 +35,7 @@ export class CustomersComponent implements OnInit {
   private page$ = new BehaviorSubject(1);
 
   actionItems!: MenuItem[];
+  sortOptions!: MenuItem[];
 
   showUpdateDialog: boolean = false;
   selectedCustomer: any;

@@ -4,7 +4,11 @@ module.exports = {
     "./src/**/*.{html,ts}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      padding: {
+        '68': '17rem', // Adds pl-68 utility
+      },
+    },
   },
   plugins: [],
 }

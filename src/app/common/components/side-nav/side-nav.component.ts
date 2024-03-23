@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { SvgIconComponent } from '../svg-icon/svg-icon.component';
 import { RouterModule } from '@angular/router';
+import { BackdropService } from '@common/services/signals/backdrop.service';
 
 @Component({
   selector: 'app-side-nav',
@@ -11,11 +12,11 @@ import { RouterModule } from '@angular/router';
   styleUrl: './side-nav.component.scss'
 })
 export class SideNavComponent implements OnInit {
-  @Output() sideBarState = new EventEmitter<boolean>(false);
+  backDropService = inject(BackdropService);
   showSideBar: boolean = false;
   toggleSidebar() {
     this.showSideBar = !this.showSideBar;
-    this.sideBarState.emit(this.showSideBar);
+    this.backDropService.set('visible', this.showSideBar);
   }
 
   ngOnInit() {
