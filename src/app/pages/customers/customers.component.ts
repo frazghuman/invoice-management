@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import { ConfirmDialogComponent } from '@common/components/confirm-dialog/confirm-dialog.component';
 import { ShowMoreDirective } from '@common/directives/show-more.directive';
 import fadeInOutAnimation from '@common/animations/fade-in-out.animation';
+import { CustomerFormComponent } from './customer-form/customer-form.component';
 
 @Component({
   selector: 'app-customers',
@@ -24,6 +25,7 @@ import fadeInOutAnimation from '@common/animations/fade-in-out.animation';
     MenuModule,
     PageHeaderComponent,
     ConfirmDialogComponent,
+    CustomerFormComponent,
     ShowMoreDirective
   ],
   templateUrl: './customers.component.html',
@@ -117,6 +119,11 @@ export class CustomersComponent implements OnInit {
           command: () => this.deleteAction(customer, index)
       }
     ]
+  }
+
+  onAddCustomer(event: any) {
+    console.log(event)
+    this.showUpdateDialog = true;
   }
 
 }

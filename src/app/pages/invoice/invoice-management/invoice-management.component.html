@@ -1,0 +1,135 @@
+<app-page-header class="print:hidden" [heading]="'Invoice'" [heading2]="'Invoice'" [showActionButton]="false"></app-page-header>
+<div class="print:hidden mt-12 flex flex-col sm:flex-row w-full justify-between">
+    <div class="m-4 flex flex-col justify-center">
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 lg:space-x-2 rtl:space-x-reverse">
+              <li class="inline-flex items-center">
+                <a class="inline-flex items-center text-sm font-medium text-gray-700 ">
+                  <i class="material-icons">description</i>
+                  Documents
+                </a>
+              </li>
+              <li>
+                <div class="flex items-center">
+                    <i class="material-icons">navigate_next</i>
+                    <a  routerLink="/invoice" class="ms-1 text-sm font-medium cursor-pointer text-gray-700 hover:text-blue-600 lg:ms-2">
+                        Invoices
+                    </a>
+                </div>
+              </li>
+              <li aria-current="page">
+                <div class="flex items-center">
+                  <i class="material-icons">navigate_next</i>
+                  <span class="ms-1 text-sm font-medium text-gray-500 lg:ms-2 ">{{invoiceId}}</span>
+                </div>
+              </li>
+            </ol>
+          </nav>
+    </div>
+    <div class="m-4 flex justify-end">
+        <a class="cursor-pointer inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-900 py-1 px-3 text-white hover:bg-zinc-700 " >
+            <span class="mr-2">Save</span> <span class="material-icons">save</span>
+        </a>
+    </div>
+</div>
+<div class="print:hidden w-full inset-x-0 h-px transition bg-zinc-900 opacity-15"></div>
+<div class="custom-page-container w-full flex justify-center">
+    <div class="container">
+        <div class="bg-white rounded-t-3xl pt-0 lg:pt-0 lg:p-16 p-4 print:p-0">
+            <div class="flex flex-wrap items-start justify-between gap-6 mt-10">
+                <div>
+                    <h4 class="text-2xl font-bold uppercase">Royal Barcelona 2000 S,L</h4>
+                </div>
+                <div class="border-s border-gray-900 ps-8">
+                    <h4 class="text-base font-bold uppercase">Invoice</h4>
+                    <h4 class="text-sm font-bold uppercase">Royal Barcelona 2000 S,L</h4>
+                    <p class="text-sm font-medium uppercase max-w-52">AV/ Juveria Calle Aceria 7C Gijon Asturias 33211</p>
+                    <p class="text-sm font-medium">664283802</p>
+                    <p class="text-sm font-medium">{{'royal_bnd@hotmail.com'}}</p>
+                </div>
+            </div>
+
+            <div class="flex items-start justify-between my-10">
+                <div>
+                    <span class="text-lg font-bold">Bill to:</span>
+                    <h4 class="text-base font-bold">Dwyane Clark</h4>
+                </div>
+                <div class="flex flex-col items-end border-s border-gray-900 ps-8">
+                    <p class="text-base font-semibold flex justify-between w-52"><span>Invoice #</span> <span class="ps-10 text-sm">{{invoiceId}}</span></p>
+                    <p class="text-base font-semibold flex justify-between w-52"><span>Date: </span> <span class="ps-10 text-sm">25 Feb, 2024</span></p>
+                    <p class="text-base font-semibold flex justify-between w-52"><span>Due Date: </span> <span class="ps-10 text-sm">25 Feb, 2024</span></p>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="border-collapse table-auto w-full text-sm mt-10 whitespace-pre">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="p-4 border border-e-0 uppercase text-lg font-medium text-start">Product Description</th>
+                            <th class="p-4 border-y uppercase text-lg font-medium ">Price</th>
+                            <th class="p-4 pe-7 border-y uppercase text-lg font-medium">Qty</th>
+                            <th class="p-4 border border-s-0 uppercase text-lg font-medium">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <tr>
+                            <td class="p-5 text-base font-medium border">Lorem ipsum Dolor</td>
+                            <td class="p-5 text-base font-medium border text-center">$50.00</td>
+                            <td class="p-5 text-base font-medium border text-center">5</td>
+                            <td class="p-5 text-base font-medium border text-center">$250.00</td>
+                        </tr>
+                        <tr>
+                            <td class="p-5 text-base font-medium border">Pellentesque id neque ligula</td>
+                            <td class="p-5 text-base font-medium border text-center">$10.00</td>
+                            <td class="p-5 text-base font-medium border text-center">1</td>
+                            <td class="p-5 text-base font-medium border text-center">$10.00</td>
+                        </tr>
+                        <tr>
+                            <td class="p-5 text-base font-medium border">Interdum et malesuada Fames</td>
+                            <td class="p-5 text-base font-medium border text-center">$25.00</td>
+                            <td class="p-5 text-base font-medium border text-center">3</td>
+                            <td class="p-5 text-base font-medium border text-center">$75.00</td>
+                        </tr>
+                        <tr>
+                            <td class="p-5 text-base font-medium border">Vivamus volutpat Faucibus</td>
+                            <td class="p-5 text-base font-medium border text-center">$40.00</td>
+                            <td class="p-5 text-base font-medium border text-center">2</td>
+                            <td class="p-5 text-base font-medium border text-center">$80.00</td>
+                        </tr>
+                        <tr>
+                            <td class="p-8 text-base font-medium border"></td>
+                            <td class="p-8 text-base font-medium border text-center"></td>
+                            <td class="p-8 text-base font-medium border text-center"></td>
+                            <td class="p-8 text-base font-medium border text-center"></td>
+                        </tr>
+                        <tr class="bg-gray-100">
+                            <td colspan="4" class="p-1 ps-5 text-base font-medium border">Note</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" rowspan="3" class="p-5 text-sm font-medium border border-e-0">Payment is due max 7 days after <br>invoice without deduction. <br>Your bank and other datails space here.</td>
+                            <td class="flex flex-row justify-center p-5 text-base font-medium border text-center bg-gray-100">
+                                <div class="flex justify-end w-1/2"><b class="mr-2">Subtotal:</b></div>
+                                <div class="flex justify-start w-1/2"><span>$3150.00</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="flex flex-row justify-center p-5 text-base font-medium border text-center bg-gray-100">
+                                <div class="flex justify-end w-1/2"><b class="mr-2">Discount:</b></div>
+                                <div class="flex justify-start w-1/2"><span>$00.00</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="flex flex-row justify-center p-5 text-base font-medium border text-center bg-gray-100">
+                                <div class="flex justify-end w-1/2"><b class="mr-2">Shipping:</b></div>
+                                <div class="flex justify-start w-1/2"><span>$00.00</span></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="p-5 text-base font-medium border text-end"><b class="mr-2">Total:</b> <span>$405.00</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
