@@ -1,0 +1,16 @@
+{
+  "routes": [
+    "/",
+    "/bill",
+    "/contact-us",
+    "/customers",
+    "/dashboard",
+    "/invoice",
+    "/invoice/create",
+    "/items",
+    "/login",
+    "/proposals",
+    "/reports",
+    "/settings"
+  ]
+}
