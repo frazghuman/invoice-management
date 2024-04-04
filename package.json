@@ -1,7 +1,7 @@
 {
   "name": "invoice-management",
   "version": "1.0.0",
-  "homepage": "https://frazghuman.github.io/invoice-management",
+  "homepage": "https://github.com/frazghuman/invoice-management",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
