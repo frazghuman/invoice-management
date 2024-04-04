@@ -112,7 +112,7 @@ export class InvoiceCreateComponent {
     let subtotal = 0;
     items.forEach((item: any, itemIndex: number) => {
       const itemVlaue = this.itemsFormArray.at(itemIndex).value;
-      const itemPrice = itemVlaue?.item?.price || 0;
+      const itemPrice = itemVlaue?.item?.price || null;
       this.itemsFormArray.at(itemIndex).patchValue({price: itemPrice}, {emitEvent: false});
       if (this.itemsFormArray.at(itemIndex)?.valid) {
         
