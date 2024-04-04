@@ -1,1 +1,139 @@
-<app-page-header [heading]="'Invoice list'" [heading2]="'Invoices'" [buttonLabel]="'Invoice'" [showActionButton]="true"></app-page-header>
+<app-page-header [heading]="'Invoice list'" [heading2]="'Invoices'" [buttonLabel]="'Invoice'" (addClick)="onAddItem($event)" [showActionButton]="true"></app-page-header>
+<div class="custom-page-container w-full flex justify-center">
+    <div class="my-4 mt-12 flex flex-col xl:w-3/4 w-full justify-center">
+        <div class="flex flex-col md:flex-row w-full items-center justify-between">
+            <div class="flex h-10 items-center pl-4 pt-2 md:mr-2 md:w-auto w-full p-2">
+                <span class="text-sm font-semibold uppercase mr-2 text-nowrap">Sort By:</span> <span class="material-icons cursor-pointer" (click)="sortOptionsMenu.toggle($event)">sort</span>
+                <p-menu #sortOptionsMenu [model]="sortOptions" [popup]="true" appendTo="body"></p-menu>
+            </div>
+            <div class="flex items-center lg:w-2/3 w-full md:pr-4 md:pl-2 pr-4 pl-4">
+                <div class="sm:w-2/5 w-1/3 flex flex-row pt-2 relative z-10">
+                    <p-dropdown class="right-border-none w-full border-2 border-gray-300 bg-white h-10 sm:pl-2 rounded-lg text-sm focus:outline-none" 
+                    [options]="options" [(ngModel)]="selectedOption" (onChange)="onFilterChange($event)" appendTo="body" optionLabel="label" placeholder="Filter By:">
+                        <ng-template let-selectedOption pTemplate="selectedItem">
+                          <div class="flex flex-row justify-start">
+                            <div class="text-sm font-semibold mr-2">
+                                <span class="md:block hidden">Filter By:</span> 
+                                <span class="material-icons block md:hidden text-sm pr-2">filter_alt</span>
+                            </div>
+                            <div class="text-sm">
+                                {{selectedOption.label}}
+                            </div>
+                          </div>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+                <div class="sm:w-3/5 w-2/3 pt-2 relative mx-auto text-gray-600">
+                    @if (selectedOption?.value === 'customer' || selectedOption?.value === 'amount') {
+                        <span class="p-input-icon-right w-full">
+                            <i class="pi pi-search"></i>
+                            <input class="left-border-none grid w-full border-2 border-gray-300 bg-white p-04 rounded-lg focus:outline-none"
+                            [type]="selectedOption?.value === 'amount' ? 'number' : 'text'" pInputText [(ngModel)]="searchValue" />
+                        </span>
+                    } @else if(selectedOption?.value === 'issuedDate' || selectedOption?.value === 'dueDate') {
+                        <p-calendar class="left-border-none grid w-full border-2 border-gray-300 bg-white p-04 rounded-lg focus:outline-none"
+                        [(ngModel)]="searchValue" [iconDisplay]="'input'" [showIcon]="true"></p-calendar>
+                    }
+                </div>
+            </div>
+        </div>
+        <ul role="list" class="divide-y divide-gray-100"
+            *ngIf="paginator$ | async as paginator"
+            infiniteScroll
+            [infiniteScrollDistance]="2"
+            [infiniteScrollThrottle]="50"
+            (scrolled)="loadMoreInvoices(paginator)">
+            
+            @for (invoice of paginator.invoices; track invoice.id; let  i = $index) {
+                <li class="flex justify-between gap-x-6 py-5 cursor-pointer box-shadow">
+                    <div class="flex items-center min-w-0 gap-x-4">
+                        <div class="h-12 w-12 cursor-pointer flex justify-center items-center rounded-full" tooltipPosition="top">
+                            <span class="material-icons">
+                                receipt_long
+                            </span>
+                        </div>
+                        <div class="min-w-0 flex-auto">
+                        <p class="text-sm font-semibold leading-6 text-gray-900">{{ 'John Doe' }}</p>
+                        <p class="hidden sm:block mt-1 truncate text-xs leading-5 text-gray-500">#{{ invoice.id }}</p>
+                        <p class="sm:hidden flex justify-between mt-1 truncate text-xs leading-5 text-gray-500">
+                            <span>#{{ invoice.id }}</span>
+                            <span>Saved</span>
+                            <span class="font-semibold">{{ invoice.total | currency }}</span>
+                        </p>
+                        <p class="sm:hidden mt-1 truncate text-xs leading-5 text-gray-500">
+                            <span><span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Issued</span> <span>{{'10/12/2024'}}</span></span>
+                            <span class="ml-1"><span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Due</span> <span>{{'10/12/2024'}}</span></span>
+                        </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-row items-center">
+                        <div class="hidden shrink-0 w-20 sm:flex sm:flex-col sm:items-end">
+                            <p class="text-sm leading-6 text-gray-900">Due Date</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-500">{{'10/12/2024'}}</p>
+                        </div>
+                        <div class="hidden shrink-0 w-20 sm:flex sm:flex-col sm:items-end ml-4">
+                            <p class="text-sm leading-6 text-gray-900">Issued Date</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-500">{{'10/12/2024'}}</p>
+                        </div>
+                        <div class="hidden shrink-0 w-12 sm:flex sm:flex-col sm:items-end ml-4">
+                            <p class="text-sm leading-6 text-gray-900">Status</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-500"><span class="font-semibold">Saved</span></p>
+                        </div>
+                        <div class="hidden shrink-0 w-20 sm:flex sm:flex-col sm:items-end ml-4">
+                            <p class="text-sm leading-6 text-gray-900">Amount</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-500">{{ invoice.total | currency }}</p>
+                        </div>
+                        <div class="mx-4">
+                            <span (click)="generateMenuInvoices($event, invoice, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
+                            <p-menu #menu [model]="actionInvoices" [popup]="true" appendTo="body"></p-menu>
+                        </div>
+                    </div>
+                </li>
+            } @empty {
+                Empty list of Invoices
+            }
+            @if (loading$ | async) {
+                <li class="flex justify-between gap-x-6 py-5">
+                    <div role="status" class="w-full p-4 space-y-4 divide-y divide-gray-200 animate-pulse lg:p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full  w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full "></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full  w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full "></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full  w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full "></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full  w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full "></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4">
+                            <div>
+                                <div class="h-2.5 bg-gray-300 rounded-full  w-24 mb-2.5"></div>
+                                <div class="w-32 h-2 bg-gray-200 rounded-full "></div>
+                            </div>
+                            <div class="h-2.5 bg-gray-300 rounded-full  w-12"></div>
+                        </div>
+                        <span class="sr-only">Loading...</span>
+                    </div>                     
+                </li>
+            }
+        </ul>
+    </div>
+</div>

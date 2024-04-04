@@ -11,6 +11,9 @@ import { MenuModule } from 'primeng/menu';
 
 import * as _ from 'lodash';
 import { ConfirmDialogComponent } from '@common/components/confirm-dialog/confirm-dialog.component';
+import { ShowMoreDirective } from '@common/directives/show-more.directive';
+import fadeInOutAnimation from '@common/animations/fade-in-out.animation';
+import { CustomerFormComponent } from './customer-form/customer-form.component';
 
 @Component({
   selector: 'app-customers',
@@ -21,10 +24,13 @@ import { ConfirmDialogComponent } from '@common/components/confirm-dialog/confir
     InfiniteScrollModule,
     MenuModule,
     PageHeaderComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    CustomerFormComponent,
+    ShowMoreDirective
   ],
   templateUrl: './customers.component.html',
-  styleUrl: './customers.component.scss'
+  styleUrl: './customers.component.scss',
+  animations: [fadeInOutAnimation]
 })
 export class CustomersComponent implements OnInit {
   private api = inject(CustomersService);
@@ -40,6 +46,10 @@ export class CustomersComponent implements OnInit {
   showUpdateDialog: boolean = false;
   selectedCustomer: any;
 
+  expandCustomerDetail: any = {};
+
+  dummyText = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+  dummyAddress = "Vill. & P.O. Majra Kalan, Teh. Sambrial, Dist. Sialkot";
   constructor() {
     this.paginator$ = this.loadCustomers$();
   }
@@ -52,6 +62,7 @@ export class CustomersComponent implements OnInit {
   }
 
   updateAction(customer: any, index: number) {
+    this.expandCustomerDetail[index] = !this.expandCustomerDetail[index];
     this.showUpdateDialog = true;
     // Your update logic here
     console.log('Update action triggered'+index, customer);
@@ -59,6 +70,7 @@ export class CustomersComponent implements OnInit {
   }
 
   deleteAction(customer: any, index: number) {
+    this.expandCustomerDetail[index] = !this.expandCustomerDetail[index];
       // Your delete logic here
       console.log('Delete action triggered'+index, customer);
   }
@@ -91,7 +103,10 @@ export class CustomersComponent implements OnInit {
     this.page$.next(paginator.page + 1);
   }
 
-  generateMenuItems(customer: any, index: number) {
+  generateMenuItems(event: MouseEvent, customer: any, index: number) {
+    event.stopPropagation();
+    event.preventDefault();
+    
     this.actionItems = [
       {
           label: 'Update',
@@ -104,6 +119,11 @@ export class CustomersComponent implements OnInit {
           command: () => this.deleteAction(customer, index)
       }
     ]
+  }
+
+  onAddCustomer(event: any) {
+    console.log(event)
+    this.showUpdateDialog = true;
   }
 
 }

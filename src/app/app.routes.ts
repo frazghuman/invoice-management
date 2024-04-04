@@ -5,6 +5,8 @@ import { BillComponent } from '@pages/bill/bill.component';
 import { ContactUsComponent } from '@pages/contact-us/contact-us.component';
 import { CustomersComponent } from '@pages/customers/customers.component';
 import { DashboardComponent } from '@pages/dashboard/dashboard.component';
+import { InvoiceCreateComponent } from '@pages/invoice/invoice-create/invoice-create.component';
+import { InvoiceManagementComponent } from '@pages/invoice/invoice-management/invoice-management.component';
 import { InvoiceComponent } from '@pages/invoice/invoice.component';
 import { ItemsComponent } from '@pages/items/items.component';
 import { LoginComponent } from '@pages/login/login.component';
@@ -19,6 +21,8 @@ export const routes: Routes = [
       children: [
         { path: 'dashboard', component: DashboardComponent },
         { path: 'invoice', component: InvoiceComponent },
+        { path: 'invoice/create', component: InvoiceCreateComponent},
+        { path: 'invoice/:id', component: InvoiceManagementComponent},
         { path: 'proposals', component: ProposalsComponent },
         { path: 'bill', component: BillComponent },
         { path: 'customers', component: CustomersComponent },

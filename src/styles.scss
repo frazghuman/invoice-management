@@ -3,13 +3,14 @@
 
 // Define breakpoints as variables for reuse and maintainability
 $breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
 
 // Utilize SCSS nesting and the @media query inside the class for clarity
 .content-width{
   width: 100%; // Default mobile style
 
   // Media query for screens larger than mobile, using the variable
-  @media (min-width: $breakpoint-md) {
+  @media (min-width: $breakpoint-lg) {
     width: calc(100% - 16rem); // This applies for screens larger than 768px
   }
 }
@@ -68,3 +69,46 @@ $breakpoint-md: 768px;
     // margin-top: 0.25rem;
     // box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
   }
+
+  /* This targets the dropdown when it is focused */
+body .p-dropdown.p-focus .p-dropdown-label,
+body .p-dropdown.p-focus .p-dropdown-panel {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* If the dropdown button itself receives focus */
+body .p-dropdown.p-focus .p-dropdown-trigger {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body .p-dropdown.p-component {
+  width: 100%;
+}
+
+body .p-calendar {
+  width: 100%;
+}
+
+body .p-inputnumber {
+  width: 100%;
+  .p-inputnumber-input {
+    width: 100%;
+  }
+}
+
+body .number-center {
+  .p-inputnumber {
+    text-align: center;
+    .p-inputnumber-input {
+      text-align: center;
+    }
+  }
+}
+
+.custom-input-class {
+  @apply flex w-full border-2 border-gray-300 bg-white h-10 rounded-lg text-sm focus:outline-none;
+}

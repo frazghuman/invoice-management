@@ -23,22 +23,28 @@ export class ShowMoreDirective implements OnInit {
 
   private truncateText(): void {
     let text = this.fullText;
-    if (this.completeWords) {
-      let lastSpace = text.substr(0, this.limit).lastIndexOf(' ');
-      text = text.substr(0, lastSpace > 0 ? lastSpace : this.limit);
+    if (text.length > this.limit) {
+      if (this.completeWords) {
+        let lastSpace = text.substr(0, this.limit).lastIndexOf(' ');
+        text = text.substr(0, lastSpace > 0 ? lastSpace : this.limit);
+      } else {
+        text = text.substr(0, this.limit);
+      }
+      this.el.nativeElement.innerText = text + '... ';
     } else {
-      text = text.substr(0, this.limit);
+      this.el.nativeElement.innerText = text;
     }
-    this.el.nativeElement.innerText = text + '... ';
   }
 
   private addToggleLink(): void {
-    this.toggleElement = this.renderer.createElement('span');
-    this.renderer.addClass(this.toggleElement, 'text-blue-400');
-    this.renderer.addClass(this.toggleElement, 'cursor-pointer');
-    this.renderer.setProperty(this.toggleElement, 'innerText', 'Show more');
-    this.renderer.listen(this.toggleElement, 'click', () => this.toggleText());
-    this.renderer.appendChild(this.el.nativeElement, this.toggleElement);
+    if (this.el.nativeElement.innerText.length !== this.fullText.length) {
+      this.toggleElement = this.renderer.createElement('span');
+      this.renderer.addClass(this.toggleElement, 'text-blue-400');
+      this.renderer.addClass(this.toggleElement, 'cursor-pointer');
+      this.renderer.setProperty(this.toggleElement, 'innerText', 'Show more');
+      this.renderer.listen(this.toggleElement, 'click', () => this.toggleText());
+      this.renderer.appendChild(this.el.nativeElement, this.toggleElement);
+    }
   }
 
   private toggleText(): void {

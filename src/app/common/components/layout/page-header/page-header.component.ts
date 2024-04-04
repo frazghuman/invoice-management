@@ -24,7 +24,6 @@ export class PageHeaderComponent {
   }
 
   onAddClick() {
-    this.backDropService.set('visible', true);
     this.addClick.emit();
   }
 }
