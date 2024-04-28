@@ -19,6 +19,9 @@ export class CustomerFormComponent implements OnInit {
       name: ['', Validators.required],
       phone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      businessName: [''],
+      cif: [''],
+      nif: [''],
       address: [''],
       additionalInformation: ['']
     });

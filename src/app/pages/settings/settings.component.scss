@@ -1,0 +1,5 @@
+/* Scoped deep styles */
+:host ::ng-deep .p-tabview .p-tabview-nav-container .p-highlight {
+    border-bottom: 2px solid black !important;
+    padding-bottom: 2px !important;
+  }

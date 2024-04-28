@@ -4,7 +4,7 @@
     <app-customer-form></app-customer-form>
 </app-confirm-dialog>
 <div class="custom-page-container w-full flex justify-center">
-    <div class="my-4 mt-16 flex flex-col xl:w-3/4 w-full justify-center">
+    <div class="my-4 lg:px-4 mt-16 flex flex-col  w-full justify-center">
         <div class="flex flex-col sm:flex-row w-full items-center justify-between">
             <div class="flex h-10 items-center pl-4 lg:mr-2 lg:w-auto w-full p-2">
                 <span class="text-sm font-semibold uppercase mr-2 text-nowrap">Sort By:</span> <span class="material-icons cursor-pointer" (click)="sortOptionsMenu.toggle($event)">sort</span>
@@ -82,18 +82,36 @@
                             <p class="text-xs font-semibold leading-6 text-zinc-800">Created Date</p>
                         </div>
                         <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Business Name</p>
+                        </div>
+                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">CIF</p>
+                        </div>
+                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">NIF</p>
+                        </div>
+                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
                             <p class="text-xs font-semibold leading-6 text-zinc-800">Address</p>
                         </div>
                         <div class="shrink-0 w-auto sm:flex sm:flex-col sm:items-start ml-4">
                             <p class="text-xs font-semibold leading-6 text-zinc-800">Additional Information</p>
                         </div>
                     </div>
-                    <div class="flex w-full flex-row justify-start items-center mx-6 border-b-2 border-zinc-200">
+                    <div class="flex w-full flex-row justify-start items-start mx-6 border-b-2 border-zinc-200">
                         <div class="shrink-0 w-28 sm:hidden flex sm:flex-col sm:items-start ml-4">
                             <p class="mt-1 text-xs leading-5 text-gray-800">{{'alphabet@abc.com'}}</p>
                         </div>
                         <div class="shrink-0 w-28 lg:hidden flex sm:flex-col sm:items-start ml-4">
                             <p class="mt-1 truncate text-xs leading-5 text-gray-800">20/03/2024</p>
+                        </div>
+                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 text-xs leading-5 text-gray-800"></p>
+                        </div>
+                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 text-xs leading-5 text-gray-800"></p>
+                        </div>
+                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
+                            <p class="mt-1 text-xs leading-5 text-gray-800"></p>
                         </div>
                         <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
                             <p class="mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="customer.address.address" [limit]="45"></p>

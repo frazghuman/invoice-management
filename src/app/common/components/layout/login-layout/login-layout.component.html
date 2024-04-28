@@ -1,4 +1,7 @@
 <div class="login-layout">
     <!-- This layout is simpler, typically without a navbar or sidebar -->
+    <div class="fixed top-4 right-4" *ngIf="waiting">
+        <div class="loader"></div>
+    </div>
     <router-outlet></router-outlet>
 </div>
