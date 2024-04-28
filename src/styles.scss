@@ -112,3 +112,10 @@ body .number-center {
 .custom-input-class {
   @apply flex w-full border-2 border-gray-300 bg-white h-10 rounded-lg text-sm focus:outline-none;
 }
+
+/* Scoped deep styles */
+:host ::ng-deep .p-tabview .p-tabview-nav-container .p-highlight {
+  border-bottom: 2px solid black !important;
+  padding-bottom: 2px !important;
+}
+

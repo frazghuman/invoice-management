@@ -1,1 +1,18 @@
-<p>settings works!</p>
+<app-page-header [heading]="'Settings'" [heading2]="'Settings'" [showActionButton]="false"></app-page-header>
+<app-confirm-dialog [showDialog]="showUpdateDialog" (hide)="onHideUpdateDialog($event)" [title]="'Edit Account'">
+    <!-- <app-item-form [data]="selectedItem"></app-item-form> -->
+</app-confirm-dialog>
+<div class="custom-page-container w-full lg:pl-4 pl-0 lg:pr-4 pr-0 flex justify-start">
+    <div class="my-4 mt-16 flex flex-col w-full justify-center">
+        <div class="flex flex-col sm:flex-row w-full items-center justify-between bg-white shadow-md bg-clip-border rounded-md">
+            <p-tabView class="w-full">
+                <p-tabPanel header="General">
+                    <app-general></app-general>
+                </p-tabPanel>
+                <p-tabPanel header="User Management">
+                    <app-user-management></app-user-management>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </div>
+</div>

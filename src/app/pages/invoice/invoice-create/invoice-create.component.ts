@@ -83,12 +83,12 @@ export class InvoiceCreateComponent {
   createItem(): FormGroup {
     const itemFormGroup =  this.fb.group({
       item: ['', Validators.required],
-      price: [null],
+      price: [null, Validators.required],
       quantity: [null, [Validators.required, Validators.min(1)]],
       total: [null]
     });
 
-    itemFormGroup.get('price')?.disable();
+    // itemFormGroup.get('price')?.disable();
     itemFormGroup.get('total')?.disable();
 
     return itemFormGroup;

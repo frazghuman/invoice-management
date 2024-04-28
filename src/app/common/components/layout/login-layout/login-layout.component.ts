@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LoaderService } from '@common/services/loader/loader.service';
 
 @Component({
   selector: 'app-login-layout',
@@ -11,4 +12,9 @@ import { RouterOutlet } from '@angular/router';
 })
 export class LoginLayoutComponent {
 
+  loaderService = inject(LoaderService);
+
+  get waiting(): boolean {
+    return this.loaderService.waiting();
+  }
 }
