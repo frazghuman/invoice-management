@@ -15,13 +15,14 @@ export class CompaniesManagementService extends BaseService {
   }
 
 
-  public getCompaniesManagement$(page: number = 1, itemsPerPage: number = 16): Observable<CompaniesManagementPaginator> {
+  public getCompaniesManagement$(params: any, page: number = 1, itemsPerPage: number = 16): Observable<CompaniesManagementPaginator> {
     return this.http.get<CompaniesJsonResponse>(
       '/companies',
       {
         params: {
           limit: itemsPerPage,
-          skip: itemsPerPage * (page - 1)
+          skip: itemsPerPage * (page - 1),
+          ...params
         }
       }
     ).pipe(

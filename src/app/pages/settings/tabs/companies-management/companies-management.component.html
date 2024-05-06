@@ -1,7 +1,4 @@
-<!-- <p>companies-management works!</p>
-<pre>permission: {{userHasPermission('manage-companies') | json}}</pre> -->
-<!-- <app-page-header [heading]="'Customer list'" [heading2]="'Customers'" [buttonLabel]="'Customer'"  (addClick)="onAddCustomer($event)"></app-page-header>
- -->
+<p-toast position="top-right"></p-toast>
 <p-confirmDialog></p-confirmDialog>
 <app-confirm-dialog [showDialog]="showUpdateDialog" (hide)="onHideUpdateDialog($event)" 
     [data]="selectedCompany" [title]="selectedCompany ? 'Update Company' : 'Add Company'">
@@ -15,13 +12,19 @@
     <div class="my-4 lg:px-4 flex flex-col w-full justify-center">
         <div class="flex flex-col sm:flex-row w-full items-center justify-between">
             <div class="flex h-10 items-center pl-4 lg:mr-2 lg:w-auto w-full p-2">
-                <span class="text-sm font-semibold uppercase mr-2 text-nowrap">Sort By:</span> <span class="material-icons cursor-pointer" (click)="sortOptionsMenu.toggle($event)">sort</span>
+                <span class="text-sm font-semibold uppercase mr-2 text-nowrap">Sort By:</span> 
+                <span (click)="sortOptionsMenu.toggle($event)" class="cursor-pointer">
+                    <span class="{{selectedSortOrderIcon}}"></span>
+                    <span class="text-sm font-semibold uppercase pl-2 text-nowrap">{{selectedSortOrderLabel}}</span>
+                </span>
                 <p-menu #sortOptionsMenu [model]="sortOptions" [popup]="true" appendTo="body"></p-menu>
             </div>
             <div class="flex items-center lg:w-1/2 w-full lg:pr-4 lg:pl-0 pr-4 pl-4">
                 <div class="w-full items-center pt-2 relative mx-auto text-gray-600 mr-2">
-                    <input class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                      type="search" name="search" placeholder="Search">
+                    <input 
+                        (keyup)="onSearch($event)"
+                        class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                        type="text" name="search" placeholder="Search">
                     <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
                       <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
