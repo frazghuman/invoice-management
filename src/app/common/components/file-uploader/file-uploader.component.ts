@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { serverUrl } from 'src/environment';
 
 @Component({
@@ -11,6 +11,7 @@ import { serverUrl } from 'src/environment';
   styleUrl: './file-uploader.component.scss'
 })
 export class FileUploaderComponent {
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @Input() imageUrl: string = '';
   @Output() uploadCompleted = new EventEmitter<string>();
   private http: HttpClient = inject(HttpClient)
@@ -53,11 +54,10 @@ export class FileUploaderComponent {
     this.errorMessage = '';
 
     // Validate file type
-    const validTypes = ['image/png', 'image/jpeg', 'image/gif'];
-    if (!validTypes.includes(file.type)) {
-      this.errorMessage = 'Only PNG, JPG, and GIF files are allowed.';
-      return;
-    }
+    // if (!file?.type?.startsWith('image/')) {
+    //   this.errorMessage = 'Only image files are allowed.';
+    //   return;
+    // }
 
     // Validate file size (< 10 MB)
     const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
@@ -76,7 +76,7 @@ export class FileUploaderComponent {
     const uploadUrl = '/file/upload/image'; // Change this to your upload URL
     this.isLoading = true;
 
-    this.http.post(uploadUrl, formData, { responseType: 'json' }).subscribe({
+    this.http.post(uploadUrl, formData).subscribe({
       next: (response: any) => {
         const { fileUrl } = response.data;
         this.imageUrl = fileUrl;
@@ -85,11 +85,14 @@ export class FileUploaderComponent {
       },
       error: (error) => {
         this.isLoading = false;
-        this.imageUrl = '';
-        this.uploadCompleted.emit(this.imageUrl);
+        this.resetFileInput();
         console.error('Upload error:', error);
       }
     });
+  }
+
+  resetFileInput(): void {
+    this.fileInput.nativeElement.value = ''; // Reset the file input
   }
 
   removeFile() {

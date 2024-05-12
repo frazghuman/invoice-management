@@ -34,6 +34,18 @@ export class CompaniesManagementService extends BaseService {
     );
   }
 
+  public getAllCompaniesManagement$(): Observable<CompaniesManagementPaginator> {
+    return this.http.get<CompaniesJsonResponse>(
+      '/companies'
+    ).pipe(
+      map((response) => ({
+        companies: response.companies,
+        page: -1,
+        hasMorePages: false
+      } as CompaniesManagementPaginator))
+    );
+  }
+
   public createCompany$(updateData: any): Observable<any> {
     return this.http.post(`/companies`, updateData)
       .pipe(

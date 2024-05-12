@@ -5,27 +5,49 @@
         <div class="border-b border-gray-900/10 pb-12">
           <div class="mt-10 grid grid-cols-1 gap-y-4 sm:grid-cols-6">
               <div class="col-span-full flex flex-col w-full items-center">
-                  <label for="name" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Name*</label>
+                  <label for="company-name" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Name*</label>
                   <div class="mt-2 w-full">
-                    <input type="text" name="name" formControlName="name" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <input type="text" name="company-name" formControlName="name" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div *ngIf="customerForm.get('name')?.errors && customerForm.get('name')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ customerForm.get('name')?.errors?.['required'] ? 'Name is required' : '' }}
+                    </div>
                   </div>
               </div>
               <div class="col-span-full flex flex-col w-full items-center">
                   <label for="phone" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Phone*</label>
                   <div class="mt-2 w-full">
-                    <input type="text" name="phone" formControlName="phone" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <input type="phone" name="phone" formControlName="phone" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div *ngIf="customerForm.get('phone')?.errors && customerForm.get('phone')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ customerForm.get('phone')?.errors?.['required'] ? 'Phone is required' : '' }}
+                    </div>
+                  </div>
+              </div>
+              <div class="col-span-full flex flex-col w-full items-center">
+                  <label for="email" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Email*</label>
+                  <div class="mt-2 w-full">
+                    <input type="text" name="email" formControlName="email" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div *ngIf="customerForm.get('email')?.errors && customerForm.get('email')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ customerForm.get('email')?.errors?.['required'] ? 'Email is required' : '' }}
+                      {{ customerForm.get('email')?.errors?.['email'] ? 'Enter a valid email' : '' }}
+                    </div>
                   </div>
               </div>
               <div class="col-span-full flex flex-col w-full items-center">
                   <label for="nif" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">NIF*</label>
                   <div class="mt-2 w-full">
                     <input type="text" name="nif" formControlName="nif" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div *ngIf="customerForm.get('nif')?.errors && customerForm.get('nif')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ customerForm.get('nif')?.errors?.['required'] ? 'NIF is required' : '' }}
+                    </div>
                   </div>
               </div>
               <div class="col-span-full flex flex-col w-full items-center">
                   <label for="businessName" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Business Name*</label>
                   <div class="mt-2 w-full">
                     <input type="text" name="businessName" formControlName="businessName" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div *ngIf="customerForm.get('businessName')?.errors && customerForm.get('businessName')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ customerForm.get('businessName')?.errors?.['required'] ? 'Business Name is required' : '' }}
+                    </div>
                   </div>
               </div>
               <div class="col-span-full flex flex-col w-full items-center">
@@ -35,18 +57,18 @@
                       class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm 
                       ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 
                       focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div *ngIf="customerForm.get('cif')?.errors && customerForm.get('cif')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ customerForm.get('cif')?.errors?.['required'] ? 'CIF is required' : '' }}
+                    </div>
                   </div>
               </div>
               <div class="col-span-full flex flex-col w-full items-center">
                   <label for="address" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Address*</label>
                   <div class="mt-2 w-full">
                     <input type="text" name="address" formControlName="address" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                  </div>
-              </div>
-              <div class="col-span-full flex flex-col w-full items-center">
-                  <label for="address" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Address*</label>
-                  <div class="mt-2 w-full">
-                    <input type="text" name="address" formControlName="address" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <div *ngIf="customerForm.get('address')?.errors && customerForm.get('address')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ customerForm.get('address')?.errors?.['required'] ? 'Address is required' : '' }}
+                    </div>
                   </div>
               </div>
               <div class="col-span-full">
@@ -54,7 +76,11 @@
                   <div class="mt-2">
                     <textarea id="additional-Information-field" name="additional-Information-field" formControlName="additionalInformation" rows="3" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                   </div>
-                  <p class="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about Lot if applicable.</p>
+                  <p class="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about customer if applicable.</p>
+              </div>
+              <div class="col-span-full">
+                  <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">Logo/Image</label>
+                  <app-file-uploader [imageUrl]="imageUrl" (uploadCompleted)="onFileUpload($event)"></app-file-uploader>
               </div>
           </div>
         </div>
@@ -64,6 +90,14 @@
   </div>
 </div>
 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-  <button type="button" class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto">Save</button>
-  <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+  <button
+    (click)="onSubmit()" 
+    type="button" 
+    class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+    >Save</button>
+  <button 
+    (click)="cancel()"
+    type="button" 
+    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+    >Cancel</button>
 </div>

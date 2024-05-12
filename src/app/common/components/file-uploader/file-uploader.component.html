@@ -21,7 +21,7 @@
             <div class="mt-4 flex justify-center text-sm leading-6 text-gray-600">
             <label class="cursor-pointer rounded-md bg-white font-semibold text-indigo-600 hover:text-indigo-500">
                 <span>Upload a file</span>
-                <input type="file" (change)="onFileSelected($event)" class="sr-only">
+                <input #fileInput type="file" (change)="onFileSelected($event)" class="sr-only">
             </label>
             <p class="pl-1">or drag and drop</p>
             </div>
