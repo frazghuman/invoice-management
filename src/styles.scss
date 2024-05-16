@@ -85,7 +85,20 @@ body .p-dropdown.p-focus .p-dropdown-trigger {
   box-shadow: none !important;
 }
 
-body .p-dropdown.p-component {
+body .p-autocomplete.p-component.p-inputwrapper {
+  line-height: 1.5rem;
+  padding: 0 0.5rem;
+  width: 100%;
+  .p-autocomplete-input.p-inputtext.p-component {
+    width: 100%;
+  }
+}
+
+body .p-inputnumber-input {
+  padding: 0 0.5rem;
+}
+
+body .p-.p-component {
   width: 100%;
 }
 

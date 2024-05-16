@@ -16,7 +16,7 @@ export class ItemsService extends BaseService {
 
   public getItems$(page: number = 1, itemsPerPage: number = 16): Observable<ItemsPaginator> {
     return this.http.get<ItemsJsonResponse>(
-      'https://dummyjson.com/products',
+      '/items',
       {
         params: {
           limit: itemsPerPage,
@@ -25,10 +25,51 @@ export class ItemsService extends BaseService {
       }
     ).pipe(
       map((response) => ({
-        products: response.products,
+        items: response.items,
         page: page,
         hasMorePages: response.skip + response.limit < response.total
       } as ItemsPaginator))
     );
   }
+
+  public createItem$(updateData: any): Observable<any> {
+    return this.http.post(`/items`, updateData)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public updateItem$(itemId: string, updateData: any): Observable<any> {
+    return this.http.put(`/items/${itemId}`, updateData)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public deleteItem$(itemId: string): Observable<any> {
+    return this.http.delete(`/items/${itemId}`)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public addItemPrice$(itemId: string, updateData: any): Observable<any> {
+    return this.http.post(`/items/${itemId}/prices`, updateData)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+  
 }

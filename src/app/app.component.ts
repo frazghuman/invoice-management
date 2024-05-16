@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { SharedModule } from '@common/shared/shared.module';
@@ -12,4 +12,5 @@ import { SharedModule } from '@common/shared/shared.module';
 })
 export class AppComponent {
   title = 'invoice-management';
+
 }
