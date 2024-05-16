@@ -14,6 +14,7 @@ import { LoginComponent } from '@pages/auth/login/login.component';
 import { ProposalsComponent } from '@pages/proposals/proposals.component';
 import { ReportsComponent } from '@pages/reports/reports.component';
 import { SettingsComponent } from '@pages/settings/settings.component';
+import { NotFoundComponent } from '@pages/not-found/not-found.component';
 
 export const routes: Routes = [
     {
@@ -63,11 +64,7 @@ export const routes: Routes = [
         { 
           path: 'contact-us', component: ContactUsComponent,
           canActivate: [AuthGuard] // Requires authentication
-        },
-        // { 
-        //   path: '', redirectTo: '/dashboard', pathMatch: 'full',
-        //   canActivate: [AuthGuard] // Requires authentication
-        // },
+        }
       ],
     },
     {
@@ -77,6 +74,12 @@ export const routes: Routes = [
         { path: 'sign-in', component: LoginComponent },
       ],
     },
-    // { path: '', redirectTo: '/dashboard', pathMatch: 'full' }, // Redirect to `dashboard` as the default route
-    // { path: '**', redirectTo: '/dashboard' }, // Wildcard route for a 404 page, redirecting to dashboard
+    {
+      path: 'p',
+      component: LoginLayoutComponent,
+      children: [
+        { path: '404', component: NotFoundComponent },
+      ],
+    },
+    { path: '**', redirectTo: '/p/404' },
   ];

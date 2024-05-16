@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
     providedIn: 'root'
@@ -15,6 +16,7 @@ export class AuthService {
   private refreshTokenKey = 'refreshToken';
 
   private accessToken: string | null = null;
+  JWPHelper: JwtHelperService;
 
   setTokens(accessToken: string, refreshToken: string): void {
     localStorage.setItem(this.accessTokenKey, accessToken);
@@ -38,7 +40,9 @@ export class AuthService {
     return null;
   }
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    this.JWPHelper = new JwtHelperService();
+  }
 
   login(email: string, password: string): Observable<any> {
     const body = { email, password };
@@ -96,5 +100,36 @@ export class AuthService {
     }
 
     return null; // Return null if expiry date is not available
+  }
+
+  parseJwt(token: string | null) {
+    if (token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(Buffer.from(base64, 'base64').toString().split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+  
+      return JSON.parse(jsonPayload);
+    }
+    return null;
+  }
+
+  getPermissions(): string[] {
+    const authToken = this.getAccessToken()
+    if (authToken) {
+      const decodedToken = this.JWPHelper.decodeToken(authToken);
+      return decodedToken ? decodedToken.permissions : [];
+    }
+    return [];
+  }
+
+  hasPermission(validatePermission: string): boolean {
+    const permissions: string[] = this.getPermissions();
+    const hasPermission = permissions.find((permission: string) => permission === validatePermission);
+    if (hasPermission) {
+      return true;
+    }
+    return false;
   }
 }

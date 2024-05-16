@@ -1,0 +1,86 @@
+<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+    <div class="px-0">
+      <form [formGroup]="companyForm">
+        <div class="space-y-12">
+          <div class="border-b border-gray-900/10 pb-12">
+            <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-6">
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="company-name" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Name*</label>
+                    <div class="mt-2 w-full">
+                      <input type="text" name="company-name" formControlName="name" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="companyForm.get('name')?.errors && companyForm.get('name')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ companyForm.get('name')?.errors?.['required'] ? 'Name is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="phone" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Phone*</label>
+                    <div class="mt-2 w-full">
+                      <input type="phone" name="phone" formControlName="phone" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="companyForm.get('phone')?.errors && companyForm.get('phone')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ companyForm.get('phone')?.errors?.['required'] ? 'Phone is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="email" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Email*</label>
+                    <div class="mt-2 w-full">
+                      <input type="text" name="email" formControlName="email" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="companyForm.get('email')?.errors && companyForm.get('email')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ companyForm.get('email')?.errors?.['required'] ? 'Email is required' : '' }}
+                        {{ companyForm.get('email')?.errors?.['email'] ? 'Enter a valid email' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="cif" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">CIF*</label>
+                    <div class="mt-2 w-full">
+                      <input type="string" name="cif" formControlName="cif" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="companyForm.get('cif')?.errors && companyForm.get('cif')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ companyForm.get('cif')?.errors?.['required'] ? 'CIF is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="businessNo" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Business No*</label>
+                    <div class="mt-2 w-full">
+                      <input type="string" name="businessNo" formControlName="businessNo" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="companyForm.get('businessNo')?.errors && companyForm.get('businessNo')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ companyForm.get('businessNo')?.errors?.['required'] ? 'Business No is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full">
+                    <label for="address" class="block text-sm font-medium leading-6 text-gray-900">Address</label>
+                    <div class="mt-2">
+                      <textarea id="address" name="address" formControlName="address" rows="3" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                      <div *ngIf="companyForm.get('address')?.errors && companyForm.get('address')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ companyForm.get('address')?.errors?.['required'] ? 'Address is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full">
+                    <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">Logo</label>
+                    <app-file-uploader [imageUrl]="logoUrl" (uploadCompleted)="onFileUpload($event)"></app-file-uploader>
+                </div>
+            </div>
+          </div>
+        </div>
+    </form>
+    
+    </div>
+  </div>
+  <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+    <button 
+        type="button" 
+        class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold  shadow-sm sm:ml-3 sm:w-auto"
+        [ngClass]="{'bg-gray-600 hover:bg-gray-500 text-white': companyForm.valid, 'bg-white text-gray-900': !companyForm.valid}"
+        [disabled]="!companyForm.valid"
+        (click)="onSubmit()"
+    >Save</button>
+    <button 
+        type="button" 
+        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+        (click)="cancel()"
+    >Cancel</button>
+  </div>

@@ -1,19 +1,29 @@
-<!-- <app-page-header [heading]="'Customer list'" [heading2]="'Customers'" [buttonLabel]="'Customer'"  (addClick)="onAddCustomer($event)"></app-page-header>
+<p-toast position="top-right"></p-toast>
+<p-confirmDialog></p-confirmDialog>
 <app-confirm-dialog [showDialog]="showUpdateDialog" (hide)="onHideUpdateDialog($event)" 
-    [data]="selectedCustomer" [title]="'Add/Update Customer'">
-    <app-customer-form></app-customer-form>
-</app-confirm-dialog> -->
+    [data]="selectedUser" [title]="selectedUser ? 'Update User' : 'Add User'">
+    <app-user-form 
+        [data]="selectedUser"
+        (submitEvent)="onSubmit($event)"
+        (cancelEvent)="onCancel($event)"
+    ></app-user-form>
+</app-confirm-dialog>
 <div class="custom-page-container w-full flex justify-center">
     <div class="my-4 lg:px-4 flex flex-col w-full justify-center">
         <div class="flex flex-col sm:flex-row w-full items-center justify-between">
             <div class="flex h-10 items-center pl-4 lg:mr-2 lg:w-auto w-full p-2">
-                <span class="text-sm font-semibold uppercase mr-2 text-nowrap">Sort By:</span> <span class="material-icons cursor-pointer" (click)="sortOptionsMenu.toggle($event)">sort</span>
+                <span class="text-sm font-semibold uppercase mr-2 text-nowrap">Sort By:</span> 
+                <span (click)="sortOptionsMenu.toggle($event)" class="cursor-pointer">
+                    <span class="{{selectedSortOrderIcon}}"></span>
+                    <span class="text-sm font-semibold uppercase pl-2 text-nowrap">{{selectedSortOrderLabel}}</span>
+                </span>
                 <p-menu #sortOptionsMenu [model]="sortOptions" [popup]="true" appendTo="body"></p-menu>
             </div>
             <div class="flex items-center lg:w-1/2 w-full lg:pr-4 lg:pl-0 pr-4 pl-4">
-                <div class="w-full pt-2 relative mx-auto text-gray-600">
-                    <input class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                      type="search" name="search" placeholder="Search">
+                <div class="w-full pt-2 relative mx-auto text-gray-600 mr-2">
+                    <input (keyup)="onSearch($event)"
+                        class="w-full border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                        type="text" name="search" placeholder="Search">
                     <button type="submit" class="absolute right-0 top-0 mt-5 mr-4">
                       <svg class="text-gray-600 h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px"
@@ -24,6 +34,10 @@
                       </svg>
                     </button>
                 </div>
+                <div>
+                    <a class="cursor-pointer inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-900 py-1 px-3 text-white hover:bg-zinc-700 " 
+                    (click)="createAction()"><span>User</span> <span class="material-icons">add</span></a>
+                </div>
             </div>
         </div>
     <ul role="list" class="divide-y divide-gray-100"
@@ -33,72 +47,75 @@
         [infiniteScrollThrottle]="50"
         (scrolled)="loadMoreUsers(paginator)">
         
-        @for (customer of paginator.usersManagement; track customer.id; let  i = $index) {
-            <li class="flex justify-between gap-x-6 px-3 py-5 cursor-pointer" (click)="expandUserManagementDetail[i] = !expandUserManagementDetail[i]">
+        @for (user of paginator.users; track user._id; let  i = $index) {
+            <li class="flex justify-between gap-x-6 px-3 py-5 lg:cursor-default cursor-pointer" (click)="expandUserManagementDetail[i] = !expandUserManagementDetail[i]">
                 <div class="flex min-w-0 gap-x-4">
-                    <div class="h-12 w-12 cursor-pointer flex justify-center items-center rounded-full" [pTooltip]="!!expandUserManagementDetail[i] ? 'Hide details': 'Show detials'" tooltipPosition="top">
+                    <div class="h-12 w-12 cursor-pointer lg:hidden flex justify-center items-center rounded-full" [pTooltip]="!!expandUserManagementDetail[i] ? 'Hide details': 'Show detials'" tooltipPosition="top">
                         <span class="material-icons">
                             {{!!expandUserManagementDetail[i] ? 'expand_more' : 'expand_less'}}
                         </span>
                     </div>
+                    <div class="hidden md:flex justify-center items-center overflow-hidden h-12 w-12 flex-none rounded-full bg-gray-50">
+                        <img class="w-full h-auto" [src]="completeUrl(user.image)">
+                    </div>
                     <div class="min-w-0 flex-auto">
-                    <p class="text-sm font-semibold leading-6 text-gray-900">{{ customer.firstName }} {{ customer.lastName }}</p>
+                    <p class="text-sm font-semibold leading-6 text-gray-900">{{ user.name }}</p>
                     <p class="hidden sm:flex items-center mt-1 truncate text-xs leading-5 text-gray-500">
-                        CEO
+                        {{user?.designation}}
                     </p>
-                    <p class="sm:hidden mt-1 truncate text-xs leading-5 text-gray-500">
-                        Designation: CEO, Role: Super Admin
+                    <p class="sm:hidden mt-1 text-xs leading-5 text-gray-500">
+                        Designation: {{user?.designation}},<br/> Role: {{user?.role?.name | customCapitalize}}
                     </p>
                     </div>
                     
                 </div>
                 <div class="flex flex-row items-center">
-                    <div class="hidden shrink-0 w-28 lg:flex lg:flex-col lg:items-start">
+                    <div class="hidden shrink-0 w-48 lg:flex lg:flex-col lg:items-start">
+                        <p class="text-sm leading-6 text-gray-900">Phone</p>
+                        <p class="w-full overflow-hidden text-ellipsis mt-1 text-xs leading-5 text-gray-500">
+                            <a [href]="'tel:'+user.phone">{{user.phone}}</a>
+                        </p>
+                    </div>
+                    <div class="hidden shrink-0 w-48 lg:flex lg:flex-col lg:items-start">
                         <p class="text-sm leading-6 text-gray-900">Email</p>
-                        <p class="w-full overflow-hidden text-ellipsis mt-1 text-xs leading-5 text-gray-500">{{ customer.email }}</p>
+                        <p class="w-full overflow-hidden text-ellipsis mt-1 text-xs leading-5 text-gray-500">{{ user.email }}</p>
                     </div>
                     <div class="hidden shrink-0 w-28 sm:flex sm:flex-col sm:items-start">
                         <p class="text-sm leading-6 text-gray-900">Role</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500">Super Admin</p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500">{{user?.role?.name | customCapitalize}}</p>
                     </div>
                     <div class="hidden shrink-0 w-28 sm:flex sm:flex-col sm:items-start">
                         <p class="text-sm leading-6 text-gray-900">Status</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500">Active </p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500">{{ user.verified ? 'Active' : 'InActive' }} </p>
                     </div>
                     <div class="ml-4">
-                        <span (click)="generateMenuItems($event, customer, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
+                        <span (click)="generateMenuItems($event, user, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
                         <p-menu #menu [model]="actionItems" [popup]="true" appendTo="body"></p-menu>
                     </div>
                 </div>
             </li>
-            <li *ngIf="!!expandUserManagementDetail[i]" @fadeInOut class="flex flex-col justify-end gap-x-6 lg:ml-10 py-5 bg-zinc-100 overflow-x-auto scroll-container">
+            <li *ngIf="!!expandUserManagementDetail[i]" @fadeInOut class="lg:hidden flex flex-col justify-end gap-x-6 lg:ml-10 py-5 bg-zinc-100 overflow-x-auto scroll-container">
                 <div class="flex flex-col w-fit">
                     <div class="flex w-full flex-row justify-start items-start mx-6 border-b-2 border-zinc-200">
-                        <div class="shrink-0 w-28 lg:hidden flex lg:flex-col lg:items-start ml-4">
+                        <div class="shrink-0 w-48 lg:hidden flex lg:flex-col sm:items-start ml-4">
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">Phone</p>
+                        </div>
+                        <div class="shrink-0 w-48 lg:hidden flex lg:flex-col lg:items-start ml-4">
                             <p class="text-xs font-semibold leading-6 text-zinc-800">Email</p>
                         </div>
                         <div class="shrink-0 w-28 sm:hidden flex sm:flex-col sm:items-start ml-4">
                             <p class="text-xs font-semibold leading-6 text-zinc-800">Status</p>
                         </div>
-                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
-                            <p class="text-xs font-semibold leading-6 text-zinc-800">Phone</p>
-                        </div>
-                        <div class="shrink-0 w-auto sm:flex sm:flex-col sm:items-start ml-4">
-                            <p class="text-xs font-semibold leading-6 text-zinc-800">Additional Information</p>
-                        </div>
                     </div>
                     <div class="flex w-full flex-row justify-start items-center mx-6 border-b-2 border-zinc-200">
-                        <div class="shrink-0 w-28 lg:hidden flex lg:flex-col lg:items-start ml-4">
+                        <div class="shrink-0 w-48 lg:hidden flex lg:flex-col sm:items-start ml-4">
+                            <p class="mt-1 truncate text-xs leading-5 text-gray-800"><a [href]="'tel:'+user.phone">{{user.phone}}</a></p>
+                        </div>
+                        <div class="shrink-0 w-48 lg:hidden flex lg:flex-col lg:items-start ml-4">
                             <p class="mt-1 text-xs leading-5 text-gray-800">{{'alphabet@abc.com'}}</p>
                         </div>
                         <div class="shrink-0 w-28 sm:hidden flex sm:flex-col sm:items-start ml-4">
-                            <p class="mt-1 truncate text-xs leading-5 text-gray-800">Active</p>
-                        </div>
-                        <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
-                            <p class="mt-1 truncate text-xs leading-5 text-gray-800"><a [href]="'tel:'+customer.phone">{{customer.phone}}</a></p>
-                        </div>
-                        <div class="shrink-0 w-auto sm:flex sm:flex-col sm:items-start ml-4">
-                            <p class="w-[22rem] max-w-full mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="dummyText" [limit]="45"></p>
+                            <p class="mt-1 truncate text-xs leading-5 text-gray-800">{{ user.verified ? 'Active' : 'InActive' }}</p>
                         </div>
                     </div>
                 </div>

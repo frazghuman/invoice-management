@@ -3,39 +3,30 @@
     <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
       <div class="space-y-12">
         <div class="border-b border-gray-900/10 pb-12">
-          <h2 class="text-base font-semibold leading-7 text-gray-900">Add Lot</h2>
-          <p class="mt-1 text-sm leading-6 text-gray-600">This information will update the stock so be careful what you add.</p>
-          <div class="mt-10 grid grid-cols-1 gap-y-4 sm:grid-cols-6">
+          <!-- <h2 class="text-base font-semibold leading-7 text-gray-900">Add Lot</h2>
+          <p class="mt-1 text-sm leading-6 text-gray-600">This information will update the stock so be careful what you add.</p> -->
+          <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-6">
               <div class="col-span-full flex flex-col w-full items-center">
                   <label for="item-name" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Item Name*</label>
                   <div class="mt-2 w-full">
-                    <input type="text" name="item-name" formControlName="itemName" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <input type="text" name="item-name" formControlName="name" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    // TODO validation messages
                   </div>
               </div>
               <div class="col-span-full flex flex-col w-full items-center">
-                  <label for="lot-no" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Lot No*</label>
+                  <label for="unit-type" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Unit of Measure*</label>
                   <div class="mt-2 w-full">
-                    <input type="text" name="lot-no" formControlName="lotNo" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                  </div>
-              </div>
-              <div class="col-span-full flex flex-col w-full items-center">
-                  <label for="price-f" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Item Price*</label>
-                  <div class="mt-2 w-full">
-                    <input type="number" name="price-f" formControlName="price" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                  </div>
-              </div>
-              <div class="col-span-full flex flex-col w-full items-center">
-                  <label for="total-stock" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Total Stock in Lot*</label>
-                  <div class="mt-2 w-full">
-                    <input type="number" name="total-stock" formControlName="totalStock" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                  </div>
-              </div>
-              <div class="col-span-full flex flex-col w-full items-center">
-                  <label for="unit-type" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Unit Type*</label>
-                  <div class="mt-2 w-full">
-                      <select id="unit-type" name="unit-type" formControlName="unitType" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                          <option *ngFor="let type of unitTypes" [value]="type">{{type}}</option>
-                      </select>
+                      <p-autoComplete formControlName="baseUnitOfMeasure"
+                                      class="custom-input-class"
+                                      [suggestions]="filteredUnits" 
+                                      (completeMethod)="filterUnits($event)"
+                                      (onSelect)="onSelect($event)"
+                                      (keydown.enter)="onEnterPress($event)"
+                                      field="label" 
+                                      placeholder="Type to search or add unit">
+                      </p-autoComplete>
+                      <!-- (onBlur)="onInputBlur($event)"  -->
+
                   </div>
               </div>
               <div class="col-span-full">
@@ -43,7 +34,11 @@
                   <div class="mt-2">
                     <textarea id="description-field" name="description-field" formControlName="description" rows="3" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                   </div>
-                  <p class="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about Lot if applicable.</p>
+                  <p class="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about Item if applicable.</p>
+              </div>
+              <div class="col-span-full">
+                  <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">Image</label>
+                  <app-file-uploader [imageUrl]="imageUrl" (uploadCompleted)="onFileUpload($event)"></app-file-uploader>
               </div>
           </div>
         </div>
@@ -53,6 +48,14 @@
   </div>
 </div>
 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-  <button type="button" class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto">Save</button>
-  <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+  <button
+    (click)="onSubmit()" 
+    type="button" 
+    class="inline-flex w-full justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 sm:ml-3 sm:w-auto"
+    >Save</button>
+  <button 
+    (click)="cancel()"
+    type="button" 
+    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+    >Cancel</button>
 </div>

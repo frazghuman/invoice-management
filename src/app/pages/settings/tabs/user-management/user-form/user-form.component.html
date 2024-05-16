@@ -1,0 +1,99 @@
+<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+    <div class="px-0">
+      <form [formGroup]="userForm">
+        <div class="space-y-12">
+          <div class="border-b border-gray-900/10 pb-12">
+            <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-6">
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="user-name" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Name*</label>
+                    <div class="mt-2 w-full">
+                      <input type="text" name="user-name" formControlName="name" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="userForm.get('name')?.errors && userForm.get('name')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ userForm.get('name')?.errors?.['required'] ? 'Name is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="phone" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Phone*</label>
+                    <div class="mt-2 w-full">
+                      <input type="phone" name="phone" formControlName="phone" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="userForm.get('phone')?.errors && userForm.get('phone')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ userForm.get('phone')?.errors?.['required'] ? 'Phone is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="email" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Email*</label>
+                    <div class="mt-2 w-full">
+                      <input type="text" name="email" formControlName="email" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="userForm.get('email')?.errors && userForm.get('email')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ userForm.get('email')?.errors?.['required'] ? 'Email is required' : '' }}
+                        {{ userForm.get('email')?.errors?.['email'] ? 'Enter a valid email' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="designation" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Designation*</label>
+                    <div class="mt-2 w-full">
+                      <input type="string" name="designation" formControlName="designation" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="userForm.get('designation')?.errors && userForm.get('designation')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ userForm.get('designation')?.errors?.['required'] ? 'Designation is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                  <label for="role" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                    Role*
+                  </label>
+                  <div class="mt-2 w-full">
+                    <p-dropdown 
+                        formControlName="role"
+                        class="custom-input-class"
+                        [options]="availableRoles" [filter]="true" filterBy="label" placeholder="Select a Role"></p-dropdown>
+                    <div *ngIf="userForm.get('role')?.errors && userForm.get('role')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ userForm.get('role')?.errors?.['required'] ? 'Role is required' : '' }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                  <label for="companiesAccess" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Companies Access*</label>
+                  <div class="mt-2 w-full">
+                    <!-- <input type="string" name="companiesAccess" formControlName="companiesAccess" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"> -->
+                    <p-multiSelect
+                      [options]="availableCompanies"
+                      formControlName="companiesAccess"
+                      placeholder="Select Companies"
+                      display="chip"
+                      [virtualScroll]="true" [virtualScrollItemSize]="38"
+                      class="custom-input-class">
+                    </p-multiSelect>
+                    <div *ngIf="userForm.get('companiesAccess')?.errors && userForm.get('companiesAccess')?.touched" class="text-red-600 text-sm mt-1">
+                      {{ userForm.get('companiesAccess')?.errors?.['required'] ? 'Companies Access is required' : '' }}
+                    </div>
+                  </div>
+              </div>
+                <div class="col-span-full">
+                    <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">User Image</label>
+                    <app-file-uploader [imageUrl]="imageUrl" (uploadCompleted)="onFileUpload($event)"></app-file-uploader>
+                </div>
+            </div>
+          </div>
+        </div>
+    </form>
+    
+    </div>
+  </div>
+  <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+    <button 
+        type="button" 
+        class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold  shadow-sm sm:ml-3 sm:w-auto"
+        [ngClass]="{'bg-gray-600 hover:bg-gray-500 text-white': userForm.valid, 'bg-white text-gray-900': !userForm.valid}"
+        [disabled]="!userForm.valid"
+        (click)="onSubmit()"
+    >Save</button>
+    <button 
+        type="button" 
+        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+        (click)="cancel()"
+    >Cancel</button>
+  </div>
