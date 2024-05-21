@@ -11,13 +11,16 @@ interface Price {
 }
   
 export interface Item {
-    _id: number;
+    _id: string;
     name: string;
     description: string;
     baseUnitOfMeasure: number;
     image: string;
     prices?: Price[];
-    latestPrice?: Price
+    latestPrice?: Price;
+    inventoryCount?: number;
+    inventories?: any[];
+    totalAvailableStock?: number;
   }
   
   

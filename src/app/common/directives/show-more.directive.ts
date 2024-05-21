@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input, Renderer2, OnInit } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, Renderer2, OnInit, ChangeDetectorRef } from '@angular/core';
 
 @Directive({
   selector: '[appShowMore]',
@@ -13,7 +13,11 @@ export class ShowMoreDirective implements OnInit {
   private isFullTextShown: boolean = false;
   private toggleElement!: HTMLElement;
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.originalText = this.el.nativeElement.innerText;
@@ -23,9 +27,9 @@ export class ShowMoreDirective implements OnInit {
 
   private truncateText(): void {
     let text = this.fullText;
-    if (text.length > this.limit) {
+    if (text && text.length > this.limit) {
       if (this.completeWords) {
-        let lastSpace = text.substr(0, this.limit).lastIndexOf(' ');
+        const lastSpace = text.substr(0, this.limit).lastIndexOf(' ');
         text = text.substr(0, lastSpace > 0 ? lastSpace : this.limit);
       } else {
         text = text.substr(0, this.limit);
@@ -34,10 +38,11 @@ export class ShowMoreDirective implements OnInit {
     } else {
       this.el.nativeElement.innerText = text;
     }
+    this.cdr.markForCheck();
   }
 
   private addToggleLink(): void {
-    if (this.el.nativeElement.innerText.length !== this.fullText.length) {
+    if (this.fullText && this.el.nativeElement.innerText.length !== this.fullText.length) {
       this.toggleElement = this.renderer.createElement('span');
       this.renderer.addClass(this.toggleElement, 'text-blue-400');
       this.renderer.addClass(this.toggleElement, 'cursor-pointer');
@@ -50,12 +55,13 @@ export class ShowMoreDirective implements OnInit {
   private toggleText(): void {
     if (this.isFullTextShown) {
       this.truncateText();
-      this.addToggleLink();
+      this.renderer.setProperty(this.toggleElement, 'innerText', 'Show more');
     } else {
       this.renderer.setProperty(this.el.nativeElement, 'innerText', this.fullText + ' ');
       this.renderer.appendChild(this.el.nativeElement, this.toggleElement);
       this.renderer.setProperty(this.toggleElement, 'innerText', 'Show less');
     }
     this.isFullTextShown = !this.isFullTextShown;
+    this.cdr.detectChanges();
   }
 }

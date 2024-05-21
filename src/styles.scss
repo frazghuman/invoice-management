@@ -154,3 +154,23 @@ body .p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
   color: #495057;
   background: #FFF;
 }
+
+body .p-inputtext:disabled {
+  background-color: #f0f0f0; /* Light grey background */
+  border: 1px solid #dcdcdc; /* Light grey border */
+  color: #a0a0a0; /* Grey text */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+  opacity: 0.6; /* Make the element slightly transparent */
+}
+
+body .p-inputnumber .p-inputtext:disabled {
+  background-color: #f0f0f0; /* Light grey background */
+  border: 1px solid #dcdcdc; /* Light grey border */
+  color: #a0a0a0; /* Grey text */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+  opacity: 0.6; /* Make the element slightly transparent */
+}
+
+body .material-icons.action {
+  font-size: 15px;
+}

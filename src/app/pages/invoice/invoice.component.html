@@ -58,7 +58,7 @@
                         <p class="sm:hidden flex justify-between mt-1 truncate text-xs leading-5 text-gray-500">
                             <span>#{{ invoice.id }}</span>
                             <span>Saved</span>
-                            <span class="font-semibold">{{ invoice.total | currency }}</span>
+                            <span class="font-semibold">{{ invoice.total | customCurrency }}</span>
                         </p>
                         <p class="sm:hidden mt-1 truncate text-xs leading-5 text-gray-500">
                             <span><span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Issued</span> <span>{{'10/12/2024'}}</span></span>
@@ -81,7 +81,7 @@
                         </div>
                         <div class="hidden shrink-0 w-20 sm:flex sm:flex-col sm:items-end ml-4">
                             <p class="text-sm leading-6 text-gray-900">Amount</p>
-                            <p class="mt-1 text-xs leading-5 text-gray-500">{{ invoice.total | currency }}</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-500">{{ invoice.total | customCurrency }}</p>
                         </div>
                         <div class="mx-4">
                             <span (click)="generateMenuInvoices($event, invoice, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>

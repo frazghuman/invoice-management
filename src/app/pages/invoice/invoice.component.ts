@@ -12,6 +12,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { BehaviorSubject, Observable, scan, switchMap, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CustomCurrencyPipe } from '@common/pipes/custom-currency.pipe';
 
 @Component({
   selector: 'app-invoice',
@@ -24,7 +25,8 @@ import { Router } from '@angular/router';
     CalendarModule,
     DropdownModule,
     FormsModule,
-    PageHeaderComponent
+    PageHeaderComponent,
+    CustomCurrencyPipe
   ],
   templateUrl: './invoice.component.html',
   styleUrl: './invoice.component.scss'

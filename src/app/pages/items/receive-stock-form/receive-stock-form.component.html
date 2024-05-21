@@ -1,51 +1,139 @@
 <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-    <div class="px-0">
-      <form [formGroup]="receiveStockForm" (ngSubmit)="onSubmit()">
-        <div class="space-y-12">
-          <div class="border-b border-gray-900/10 pb-12">
-            <!-- <h2 class="text-base font-semibold leading-7 text-gray-900">Add Lot</h2>
-            <p class="mt-1 text-sm leading-6 text-gray-600">This information will update the stock so be careful what you add.</p> -->
-            <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-6">
-                
-                <div class="col-span-full flex flex-col w-full items-center">
-                    <label for="item-salePrice" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Item Price*</label>
-                    <div class="mt-2 w-full">
-                      <!-- <input type="number" item="item-salePrice" formControlName="salePrice" min="0" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"> -->
-                        <p-inputNumber
-                        formControlName="salePrice"
-                        class="custom-input-class"
-                            prefix="€"
-                        inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"> </p-inputNumber>
-                    </div>
+  <div class="px-0">
+    <form [formGroup]="receiveStockForm" (ngSubmit)="onSubmit()">
+      <div class="space-y-12">
+        <div class="border-b border-gray-900/10 pb-12">
+          <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-6">
+
+            <!-- <div class="col-span-full flex flex-col w-full items-center">
+              <label for="item" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                Item ID*
+              </label>
+              <div class="mt-2 w-full">
+                <input
+                  id="item"
+                  formControlName="item"
+                  class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+                <div *ngIf="receiveStockForm.get('item')?.errors && receiveStockForm.get('item')?.touched" class="text-red-600 text-sm mt-1">
+                  <small *ngIf="receiveStockForm.get('item')?.errors?.['required']">Item ID is required.</small>
+                  <small *ngIf="receiveStockForm.get('item')?.errors?.['pattern']">Invalid Item ID format.</small>
                 </div>
-                <div class="col-span-full flex flex-col w-full items-center">
-                    <label for="item-effectiveDate" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Effective Date*</label>
-                    <div class="mt-2 w-full">
-                        <p-calendar
-                            appendTo="body"
-                            formControlName="effectiveDate"
-                            class="custom-input-class sm:pl-2" [iconDisplay]="'input'" [showIcon]="true">
-                        </p-calendar>
-                    </div>
+              </div>
+            </div> -->
+
+            @if (selectedItem && selectedItem.hasOwnProperty('name')) {
+              <div class="col-span-full flex flex-col w-full items-center">
+                  <label for="item-salePrice" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                      Item
+                  </label>
+                  <label for="item-salePrice" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                      {{selectedItem.name}} ({{selectedItem.baseUnitOfMeasure}})
+                  </label>
+              </div>
+            }
+
+            <div class="col-span-full flex flex-col w-full items-center">
+              <label for="lotNo" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                Lot Number*
+              </label>
+              <div class="mt-2 w-full">
+                <p-inputNumber
+                  formControlName="lotNo"
+                  class="custom-input-class"
+                  [min]="1"
+                  mode="decimal">
+                </p-inputNumber>
+                <div *ngIf="receiveStockForm.get('lotNo')?.errors && receiveStockForm.get('lotNo')?.touched" class="text-red-600 text-sm mt-1">
+                  <small *ngIf="receiveStockForm.get('lotNo')?.errors?.['required']">Lot Number is required.</small>
+                  <small *ngIf="receiveStockForm.get('lotNo')?.errors?.['min']">
+                    Lot number must be at least {{ receiveStockForm.get('lotNo')?.errors?.['min']?.min }}.
+                  </small>
                 </div>
+              </div>
             </div>
+
+            <div class="col-span-full flex flex-col w-full items-center">
+              <label for="purchasePrice" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                Purchase Price per Item*
+              </label>
+              <div class="mt-2 w-full">
+                <p-inputNumber
+                formControlName="purchasePrice"
+                class="custom-input-class"
+                prefix="€"
+                inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [step]="0.5"> </p-inputNumber>
+                <div *ngIf="receiveStockForm.get('purchasePrice')?.errors && receiveStockForm.get('purchasePrice')?.touched" class="text-red-600 text-sm mt-1">
+                  <small *ngIf="receiveStockForm.get('purchasePrice')?.errors?.['required']">Purchase Price is required.</small>
+                  <small *ngIf="receiveStockForm.get('purchasePrice')?.errors?.['min']">Purchase Price must be positive.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-span-full flex flex-col w-full items-center">
+              <label for="totalStock" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                Total Received Stock*
+              </label>
+              <div class="mt-2 w-full">
+                <p-inputNumber
+                formControlName="totalStock"
+                class="custom-input-class"
+                inputId="minmaxfraction" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="0" [step]="1"> </p-inputNumber>
+                <div *ngIf="receiveStockForm.get('totalStock')?.errors && receiveStockForm.get('totalStock')?.touched" class="text-red-600 text-sm mt-1">
+                  <small *ngIf="receiveStockForm.get('totalStock')?.errors?.['required']">Total Stock is required.</small>
+                  <small *ngIf="receiveStockForm.get('totalStock')?.errors?.['min']">Total Stock must be positive.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-span-full flex flex-col w-full items-center">
+              <label for="stockReceivedDate" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                Stock Received Date*
+              </label>
+              <div class="mt-2 w-full">
+                <p-calendar
+                  appendTo="body"
+                  formControlName="stockReceivedDate"
+                  class="custom-input-class sm:pl-2" [iconDisplay]="'input'" [showIcon]="true">
+                </p-calendar>
+                <div *ngIf="receiveStockForm.get('stockReceivedDate')?.errors && receiveStockForm.get('stockReceivedDate')?.touched" class="text-red-600 text-sm mt-1">
+                  <small *ngIf="receiveStockForm.get('stockReceivedDate')?.errors?.['required']">Stock Received Date is required.</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-span-full flex flex-col w-full items-center">
+              <label for="description" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                Additional Information
+              </label>
+              <div class="mt-2 w-full">
+                <textarea
+                  id="description"
+                  formControlName="description"
+                  class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                </textarea>
+              </div>
+            </div>
+
           </div>
         </div>
+      </div>
     </form>
-    
-    </div>
   </div>
-  <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-    <button
-      (click)="onSubmit()" 
-      type="button" 
-      class="inline-flex w-full justify-center rounded-md  px-3 py-2 text-sm font-semibold shadow-sm sm:ml-3 sm:w-auto"
-      [ngClass]="{'bg-gray-600 hover:bg-gray-500 text-white': receiveStockForm.valid, 'bg-white text-gray-900': !receiveStockForm.valid}"
-      [disabled]="!receiveStockForm.valid"
-      >Save</button>
-    <button 
-      (click)="onCancel()"
-      type="button" 
-      class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-      >Cancel</button>
-  </div>
+</div>
+<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+  <button
+    (click)="onSubmit()" 
+    type="button" 
+    class="inline-flex w-full justify-center rounded-md  px-3 py-2 text-sm font-semibold shadow-sm sm:ml-3 sm:w-auto"
+    [ngClass]="{'bg-gray-600 hover:bg-gray-500 text-white': receiveStockForm.valid, 'bg-white text-gray-900': !receiveStockForm.valid}"
+    [disabled]="!receiveStockForm.valid">
+    Save
+  </button>
+  <button 
+    (click)="onCancel()"
+    type="button" 
+    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
+    Cancel
+  </button>
+</div>
