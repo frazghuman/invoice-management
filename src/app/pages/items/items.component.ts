@@ -16,7 +16,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ItemFormComponent } from './item-form/item-form.component';
 import { ShowMoreDirective } from '@common/directives/show-more.directive';
 import fadeInOutAnimation from '@common/animations/fade-in-out.animation';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
 import { ToastWrapperModule } from '@common/shared/toast.module';
 import { SalePriceAdjustmentFormComponent } from './sale-price-adjustment-form/sale-price-adjustment-form.component';

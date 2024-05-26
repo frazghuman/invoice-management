@@ -5,7 +5,7 @@ import { SettingsService } from '@common/services/settings/settings.service';
 import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
 import { ToastWrapperModule } from '@common/shared/toast.module';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 import { GeneralSettingsComponent } from './general-settings-form/general-settings.component';
 import { ConfirmDialogComponent } from '@common/components/confirm-dialog/confirm-dialog.component';
 import { CurrencyService } from '@common/services/currency/currency.service';

@@ -16,7 +16,7 @@ import fadeInOutAnimation from '@common/animations/fade-in-out.animation';
 import { parseSortString } from '@common/funtions/parse-sort-string';
 import { CustomCapitalizePipe } from '@common/pipes/custom-capitalize.pipe';
 import { UserFormComponent } from './user-form/user-form.component';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 import { ToastWrapperModule } from '@common/shared/toast.module';
 import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
 

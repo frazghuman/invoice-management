@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 
 @Component({
   selector: 'app-file-uploader',

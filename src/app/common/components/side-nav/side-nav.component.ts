@@ -6,7 +6,7 @@ import { BackdropService } from '@common/services/signals/backdrop.service';
 import { AuthService } from '@common/services/auth/auth.service';
 import { SettingsService } from '@common/services/settings/settings.service';
 import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { GeneralSettingsComponent } from '@pages/settings/tabs/general/general-settings-form/general-settings.component';
 import { ToastWrapperModule } from '@common/shared/toast.module';
