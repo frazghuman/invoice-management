@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input, Renderer2, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Directive, ElementRef, Input, Renderer2, OnInit, ChangeDetectorRef } from '@angular/core';
 
 @Directive({
   selector: '[appShowMore]',
@@ -47,7 +47,10 @@ export class ShowMoreDirective implements OnInit {
       this.renderer.addClass(this.toggleElement, 'text-blue-400');
       this.renderer.addClass(this.toggleElement, 'cursor-pointer');
       this.renderer.setProperty(this.toggleElement, 'innerText', 'Show more');
-      this.renderer.listen(this.toggleElement, 'click', () => this.toggleText());
+      this.renderer.listen(this.toggleElement, 'click', (event: Event) => {
+        event.stopPropagation();
+        this.toggleText();
+      });
       this.renderer.appendChild(this.el.nativeElement, this.toggleElement);
     }
   }
@@ -55,7 +58,7 @@ export class ShowMoreDirective implements OnInit {
   private toggleText(): void {
     if (this.isFullTextShown) {
       this.truncateText();
-      this.renderer.setProperty(this.toggleElement, 'innerText', 'Show more');
+      this.addToggleLink(); // Re-add the toggle link after truncating the text
     } else {
       this.renderer.setProperty(this.el.nativeElement, 'innerText', this.fullText + ' ');
       this.renderer.appendChild(this.el.nativeElement, this.toggleElement);

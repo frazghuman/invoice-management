@@ -61,7 +61,7 @@
                 <p-inputNumber
                 formControlName="purchasePrice"
                 class="custom-input-class"
-                prefix="€"
+                [prefix]="currencySymbol"
                 inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [step]="0.5"> </p-inputNumber>
                 <div *ngIf="receiveStockForm.get('purchasePrice')?.errors && receiveStockForm.get('purchasePrice')?.touched" class="text-red-600 text-sm mt-1">
                   <small *ngIf="receiveStockForm.get('purchasePrice')?.errors?.['required']">Purchase Price is required.</small>

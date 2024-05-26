@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, CreateEffectOptions, effect, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CurrencyService } from '@common/services/currency/currency.service';
+import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
 import { InventoryService } from '@common/services/inventory/inventory.service';
 import { CalendarModule } from 'primeng/calendar';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -13,6 +15,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
   styleUrl: './receive-stock-form.component.scss'
 })
 export class ReceiveStockFormComponent implements OnInit, OnChanges {
+  private dataSharingService = inject(DataSharingService);
+  private currencyService = inject(CurrencyService);
+  userSettings!: any;
   private inventoryService = inject(InventoryService);
   private fb: FormBuilder = inject(FormBuilder);
   @Input() data!: any;
@@ -23,6 +28,16 @@ export class ReceiveStockFormComponent implements OnInit, OnChanges {
 
   receiveStockForm!: FormGroup;
   minDate: Date = new Date();
+
+  constructor() {
+    const options: CreateEffectOptions = {
+      allowSignalWrites: true
+    };
+    // Use effect to react to signal changes
+    effect(() => {
+      this.userSettings = this.dataSharingService.userSettings();
+    }, options);
+  }
 
   ngOnInit() {
 
@@ -93,5 +108,12 @@ export class ReceiveStockFormComponent implements OnInit, OnChanges {
     if (this.receiveStockForm.valid) {
       this.submitEvent.emit(this.receiveStockForm.value);
     }
+  }
+
+  get currencySymbol() {
+    if (this.userSettings?.currency) {
+      return this.currencyService.getCurrencySymbol(this.userSettings.currency)
+    }
+    return '€';
   }
 }

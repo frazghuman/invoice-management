@@ -63,4 +63,14 @@ export class UserManagementService extends BaseService {
         })
       );
   }
+
+  public resetPassword$(userId: string, passwordResetForm: any): Observable<any> {
+    return this.http.put(`/users/${userId}/password/reset`, passwordResetForm)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
 }

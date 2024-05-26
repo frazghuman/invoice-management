@@ -97,7 +97,7 @@ export class CustomersComponent implements OnInit {
     this.selectedSortOrderLabel = this.labelBySelectedSortOrder;
 
     const sortParams = parseSortString(this.sortOrder);
-    this.params['orderBy'] = sortParams.orderBy;
+    this.params['sortBy'] = sortParams.orderBy;
     this.params['sortOrder'] = sortParams.sortOrder;
     this.page$.next(1);
     window.scrollTo(0, 0); 

@@ -23,7 +23,7 @@
                         <p-inputNumber
                         formControlName="salePrice"
                         class="custom-input-class"
-                            prefix="€"
+                        [prefix]="currencySymbol"
                         inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"> </p-inputNumber>
                     <!-- // TODO error messages -->
                       </div>

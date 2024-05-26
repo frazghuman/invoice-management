@@ -1,21 +1,37 @@
+<p-toast position="top-right"></p-toast>
+<p-confirmDialog></p-confirmDialog>
+<app-confirm-dialog [showDialog]="showUpdateDialog" (hide)="onHideUpdateDialog($event)" 
+    [title]="'Update ' + fieldName">
+    <app-general-settings
+        [fieldName]="fieldName"
+        (submitEvent)="onSubmit($event)"
+        (cancelEvent)="onCancel($event)"
+    ></app-general-settings>
+</app-confirm-dialog>
+<app-confirm-dialog [showDialog]="showResetPasswordDialog" (hide)="onHideResetPasswordDialog($event)" 
+    [title]="'Reset password'">
+    <app-account-reset-password
+        (cancelEvent)="onHideResetPasswordDialog($event)"
+    ></app-account-reset-password>
+</app-confirm-dialog>
 <div class="relative flex flex-col p-4 text-gray-700 bg-white shadow-sm bg-clip-border rounded-md w-full min-w-full">
     <h3 class="font-bold pb-4">Account</h3>
     <hr/>
     <div class="flex lg:flex-row flex-col justify-start items-stretch p-4">
         <div class="lg:w-1/5 w-full">
             <div class="flex lg:justify-start justify-center">
-                <div class="relative w-24 h-24 overflow-hidden bg-gray-100 rounded">
-                    <svg class="absolute w-28 h-28 text-gray-400 -left-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                <div class="flex justify-center items-center w-24 h-24 overflow-hidden bg-gray-100 rounded">
+                    <img class="text-gray-400" [src]="userSettings?.userImage ? completeUrl(userSettings?.userImage) : userSettings?.user?.image ? completeUrl(userSettings?.user?.image) : 'https://i.stack.imgur.com/l60Hf.png'" alt="">
                 </div>
             </div>
             <div class="flex justify-center lg:w-24">
-                <a class="font-semibold text-sm text-blue-600 cursor-pointer hover:underline">Change</a>
+                <a class="font-semibold text-sm text-blue-600 cursor-pointer hover:underline" (click)="onEdit('userImage')">Change</a>
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div>BABAR</div>
+            <div>{{userSettings?.userName ? userSettings?.userName : userSettings?.user?.name}}</div>
             <div>
-                <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Edit</a>
+                <a  class="font-medium text-blue-600 cursor-pointer hover:underline" (click)="onEdit('userName')">Edit</a>
             </div>
         </div>
     </div>
@@ -26,7 +42,7 @@
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div>{{'royal_bcn@hotmail.com'}}</div>
+            <div>{{userSettings?.user?.email}}</div>
         </div>
     </div>
     <div class="flex lg:flex-row flex-col justify-start items-stretch p-4 border-t border-gray-200">
@@ -38,7 +54,7 @@
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
             <div>******</div>
             <div>
-                <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Reset</a>
+                <a  class="font-medium text-blue-600 cursor-pointer hover:underline" (click)="onShowResetPasswordDialog()">Reset</a>
             </div>
         </div>
     </div>
@@ -49,22 +65,22 @@
     <div class="flex lg:flex-row flex-col justify-start items-stretch p-4">
         <div class="lg:w-1/5 w-full">
             <div class="flex lg:justify-start justify-center">
-                <div class="relative w-24 h-24 overflow-hidden bg-gray-100 rounded">
-                    <svg class="absolute w-28 h-28 text-gray-400 -left-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                <div class="flex justify-center items-center w-24 h-24 overflow-hidden bg-gray-100 rounded">
+                    <img class="text-gray-400" [src]="userSettings?.company?.logo ? completeUrl(userSettings?.company?.logo) : 'https://i.stack.imgur.com/l60Hf.png'" alt="">
                 </div>
             </div>
             <div class="flex justify-center lg:w-24">
-                <a class="font-semibold text-sm text-blue-600 cursor-pointer hover:underline">Change</a>
+                <a class="font-semibold text-sm text-blue-600 cursor-pointer hover:underline" (click)="onEdit('companyLogo')">Change</a>
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
             <div class="flex flex-col">
-                <div><h2 class="uppercase font-medium">Royal Barcelona 2000 S,L</h2></div>
-                <div>{{'royal_bcn@hotmail.com'}}</div>
-                <div>6652142578</div>
+                <div><h2 class="uppercase font-medium">{{userSettings?.company?.name}}</h2></div>
+                <div>{{userSettings?.company?.email}}</div>
+                <div>{{userSettings?.company?.phone}}</div>
             </div>
             <div>
-                <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Edit</a>
+                <a  class="font-medium text-blue-600 cursor-pointer hover:underline" (click)="onEdit('company')">Edit</a>
             </div>
         </div>
     </div>
@@ -76,9 +92,9 @@
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div>Tax Reg No.</div>
+            <div>{{userSettings?.company?.businessNo}}</div>
             <div>
-                <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Edit</a>
+                <a  class="font-medium text-blue-600 cursor-pointer hover:underline"></a>
             </div>
         </div>
     </div>
@@ -90,9 +106,9 @@
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div>This is temporary address, need to update this information</div>
+            <div>{{userSettings?.company?.address}}</div>
             <div>
-                <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Edit</a>
+                <a  class="font-medium text-blue-600 cursor-pointer hover:underline"></a>
             </div>
         </div>
     </div>
@@ -100,19 +116,19 @@
 <div class="relative flex flex-col p-4 mt-2 text-gray-700 bg-white shadow-sm bg-clip-border rounded-md w-full min-w-full">
     <h3 class="font-bold pb-4">Time & Region</h3>
     <hr/>
-    <div class="flex lg:flex-row flex-col justify-start items-stretch p-4">
+    <!-- <div class="flex lg:flex-row flex-col justify-start items-stretch p-4">
         <div class="lg:w-1/5 w-full">
             <div class="flex justify-start w-24">
                 <span class="font-semibold text-sm">Country</span>
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div>Spain</div>
+            <div>{{userSettings?.country}}</div>
             <div>
                 <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Edit</a>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="flex lg:flex-row flex-col justify-start items-stretch p-4 border-t border-gray-200">
         <div class="lg:w-1/5 w-full">
             <div class="flex justify-start w-24">
@@ -120,9 +136,9 @@
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div>Spanish</div>
+            <div>{{userSettings?.language}}</div>
             <div>
-                <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Edit</a>
+                <a  class="font-medium text-blue-600 cursor-pointer hover:underline" (click)="onEdit('language')">Edit</a>
             </div>
         </div>
     </div>
@@ -133,9 +149,9 @@
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div>25 Feb 2024</div>
+            <div>{{now | date : userSettings?.dateFormat ?? 'dd MMM yyyy'}}</div>
             <div>
-                <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Edit</a>
+                <a  class="font-medium text-blue-600 cursor-pointer hover:underline" (click)="onEdit('dateFormat')">Edit</a>
             </div>
         </div>
     </div>
@@ -146,21 +162,21 @@
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div class="uppercase">Eur (€)</div>
+            <div class="uppercase">{{userSettings?.currency}} ({{getCurrencySymbolByCode(userSettings?.currency)}})</div>
             <div>
-                <a  class="font-medium text-blue-600 cursor-pointer hover:underline">Edit</a>
+                <a  class="font-medium text-blue-600 cursor-pointer hover:underline" (click)="onEdit('currency')">Edit</a>
             </div>
         </div>
     </div>
-    <div class="flex lg:flex-row flex-col justify-start items-stretch p-4 border-t border-gray-200">
+    <!-- <div class="flex lg:flex-row flex-col justify-start items-stretch p-4 border-t border-gray-200">
         <div class="lg:w-1/5 w-full">
             <div class="flex justify-start w-24">
                 <span class="font-semibold text-sm">Currency Format</span>
             </div>
         </div>
         <div class="lg:w-4/5 w-full flex flex-row justify-between">
-            <div>Default</div>
+            <div>{{userSettings?.currencyFormat}}</div>
         </div>
-    </div>
+    </div> -->
 
 </div>

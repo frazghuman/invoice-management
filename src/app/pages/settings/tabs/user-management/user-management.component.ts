@@ -17,8 +17,8 @@ import { parseSortString } from '@common/funtions/parse-sort-string';
 import { CustomCapitalizePipe } from '@common/pipes/custom-capitalize.pipe';
 import { UserFormComponent } from './user-form/user-form.component';
 import { serverUrl } from 'src/environment';
-import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastWrapperModule } from '@common/shared/toast.module';
+import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
 
 @Component({
   selector: 'app-user-management',
@@ -28,8 +28,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     HttpClientModule,
     InfiniteScrollModule,
     MenuModule,
-    ToastModule,
-    ConfirmDialogModule,
+    ToastWrapperModule,
+    ConfirmDialogWrapperModule,
     PageHeaderComponent,
     ConfirmDialogComponent,
     UserFormComponent,

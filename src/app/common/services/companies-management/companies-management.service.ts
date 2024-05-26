@@ -66,6 +66,16 @@ export class CompaniesManagementService extends BaseService {
       );
   }
 
+  public updateCompanyLogo$(companyId: string, updateData: any): Observable<any> {
+    return this.http.put(`/companies/${companyId}/logo`, updateData)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
   public deleteCompany$(companyId: string): Observable<any> {
     return this.http.delete(`/companies/${companyId}`)
       .pipe(

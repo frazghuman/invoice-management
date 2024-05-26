@@ -5,20 +5,26 @@
 <div class="custom-page-container w-full lg:pl-4 pl-0 lg:pr-4 pr-0 flex justify-start">
     <div class="my-4 mt-16 flex flex-col w-full justify-center">
         <div class="flex flex-col sm:flex-row w-full items-center justify-between bg-white shadow-md bg-clip-border rounded-md">
-            <p-tabView class="w-full">
+            <p-tabView class="w-full" [(activeIndex)]="activeIndex">
                 <ng-container *ngIf="userHasPermission('manage-general-info')">    
                     <p-tabPanel header="General">
-                        <app-general></app-general>
+                        <ng-container *ngIf="activeIndex === 0">
+                            <app-general></app-general>
+                        </ng-container>
                     </p-tabPanel>
                 </ng-container>
                 <ng-container *ngIf="userHasPermission('manage_users')">    
                     <p-tabPanel header="User Management">
-                        <app-user-management></app-user-management>
+                        <ng-container *ngIf="activeIndex === 1">
+                            <app-user-management></app-user-management>
+                        </ng-container>
                     </p-tabPanel>
                 </ng-container>
                 <ng-container *ngIf="userHasPermission('manage-companies')">    
                     <p-tabPanel header="Companies Management">
-                        <app-companies-management></app-companies-management>
+                        <ng-container *ngIf="activeIndex === 2">
+                            <app-companies-management></app-companies-management>
+                        </ng-container>
                     </p-tabPanel>
                 </ng-container>
             </p-tabView>

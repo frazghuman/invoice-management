@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, CreateEffectOptions, OnInit, effect, inject } from '@angular/core';
 import { PageHeaderComponent } from '@common/components/layout/page-header/page-header.component';
 
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { BehaviorSubject, Observable, scan, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, debounceTime, Observable, scan, Subject, switchMap, tap } from 'rxjs';
 import { MenuModule } from 'primeng/menu';
 
 import * as _ from 'lodash';
@@ -23,6 +23,9 @@ import { SalePriceAdjustmentFormComponent } from './sale-price-adjustment-form/s
 import { ReceiveStockFormComponent } from './receive-stock-form/receive-stock-form.component';
 import { InventoryService } from '@common/services/inventory/inventory.service';
 import { CustomCurrencyPipe } from '@common/pipes/custom-currency.pipe';
+import { parseSortString } from '@common/funtions/parse-sort-string';
+import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
+import { CurrencyService } from '@common/services/currency/currency.service';
 
 @Component({
   selector: 'app-items',
@@ -53,16 +56,25 @@ export class ItemsComponent {
   private inventoryService = inject(InventoryService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
   private messageService: MessageService = inject(MessageService);
+  private dataSharingService = inject(DataSharingService);
+  private currencyService = inject(CurrencyService);
+  userSettings!: any;
 
   public paginator$: Observable<ItemsPaginator>;
+  private searchSubject = new Subject<string>();
 
   public loading$ = new BehaviorSubject(true);
   private page$ = new BehaviorSubject(1);
+  private params: any = {};
 
   serverBaseUrl = serverUrl;
 
   actionItems!: MenuItem[];
   sortOptions!: MenuItem[];
+  sortOrder: string = 'nameAsc';
+  
+  selectedSortOrderIcon: string = this.iconOfSelectedSortOrder;
+  selectedSortOrderLabel: string = this.labelBySelectedSortOrder;
 
   showItemUpdateDialog: boolean = false;
   selectedItem: any;
@@ -76,21 +88,97 @@ export class ItemsComponent {
   
   constructor() {
     this.paginator$ = this.loadItems$();
+    const options: CreateEffectOptions = {
+      allowSignalWrites: true
+    };
+    // Use effect to react to signal changes
+    effect(() => {
+      this.userSettings = this.dataSharingService.userSettings();
+    }, options);
   }
   ngOnInit(): void {
     this.sortOptions = [
       { label: 'Name: A to Z', icon: 'pi pi-sort-alpha-down', command: () => this.sort('nameAsc') },
       { label: 'Name: Z to A', icon: 'pi pi-sort-alpha-up', command: () => this.sort('nameDesc') },
-      { label: 'Stock: Low to High', icon: 'pi pi-sort-numeric-down', command: () => this.sort('stockAsc') },
-      { label: 'Stock: High to Low', icon: 'pi pi-sort-numeric-up', command: () => this.sort('stockDesc') },
-      { label: 'Price: Low to High', icon: 'pi pi-sort-amount-down', command: () => this.sort('priceAsc') },
-      { label: 'Price: High to Low', icon: 'pi pi-sort-amount-up', command: () => this.sort('priceDesc') }
+      { label: 'Unit: A to Z', icon: 'pi pi-sort-alpha-down', command: () => this.sort('baseUnitOfMeasureAsc') },
+      { label: 'Unit: Z to A', icon: 'pi pi-sort-alpha-up', command: () => this.sort('baseUnitOfMeasureDesc') }
     ];
+
+    this.searchSubject.pipe(
+      debounceTime(300)  // Wait for 300ms pause in events
+    ).subscribe(searchText => {
+      console.log('Search query:', searchText);
+      this.params['search'] = searchText;
+      this.page$.next(1);
+      window.scrollTo(0, 0); 
+    });
+  }
+
+  onSearch(event: KeyboardEvent): void {
+    const inputElement = event.target as HTMLInputElement;
+    this.searchSubject.next(inputElement.value.trim());  // Emit the trimmed value
   }
 
   sort(criteria: string) {
     // Implement your sorting logic here based on the criteria
     console.log(`Sorting by ${criteria}`);
+    this.sortOrder = criteria;
+    this.selectedSortOrderIcon = this.iconOfSelectedSortOrder;
+    this.selectedSortOrderLabel = this.labelBySelectedSortOrder;
+
+    const sortParams = parseSortString(this.sortOrder);
+    this.params['sortBy'] = sortParams.orderBy;
+    this.params['sortOrder'] = sortParams.sortOrder;
+    this.page$.next(1);
+    window.scrollTo(0, 0); 
+  }
+
+  get iconOfSelectedSortOrder() {
+    let icon = 'sort'
+    switch (this.sortOrder) {
+      case 'nameAsc':
+        icon = 'pi pi-sort-alpha-down';
+      break;
+      case 'nameDesc':
+        icon = 'pi pi-sort-alpha-up';
+      break;
+      case 'priceAsc':
+        icon = 'pi pi-sort-amount-down';
+      break;
+      case 'priceDesc':
+        icon = 'pi pi-sort-amount-up';
+      break;
+    
+      default:
+        icon = 'pi pi-sort-alpha-down'
+        break;
+    }
+
+    return icon;
+  }
+
+  get labelBySelectedSortOrder() {
+    let label = 'Name: A to Z'
+    switch (this.sortOrder) {
+      case 'nameAsc':
+        label = 'Name: A to Z';
+      break;
+      case 'nameDesc':
+        label = 'Name: Z to A';
+      break;
+      case 'priceAsc':
+        label = 'Price: Low to High';
+      break;
+      case 'priceDesc':
+        label = 'Price: High to Low';
+      break;
+    
+      default:
+        label = 'Name: A to Z'
+        break;
+    }
+
+    return label;
   }
 
   onHideUpdateDialog(flag: boolean) {
@@ -102,7 +190,7 @@ export class ItemsComponent {
   private loadItems$(): Observable<ItemsPaginator> {
     return this.page$.pipe(
       tap(() => this.loading$.next(true)),
-      switchMap((page) => this.api.getItems$(page)),
+      switchMap((page) => this.api.getItems$(this.params, page)),
       scan(this.updatePaginator, {items: [], page: 0, hasMorePages: true} as ItemsPaginator),
       tap(() => this.loading$.next(false)),
     );
@@ -510,6 +598,17 @@ export class ItemsComponent {
 
   completeUrl(imageUrl: string) {
     return !imageUrl ? '' : (imageUrl.indexOf('http') !== -1 ? '' : this.serverBaseUrl) + imageUrl;
+  }
+
+  get currencySymbol() {
+    if (this.userSettings?.currency) {
+      return this.currencyService.getCurrencySymbol(this.userSettings.currency)
+    }
+    return '€';
+  }
+
+  get currencyCode() {
+    return this.userSettings?.currency ?? '€'; //€
   }
 
 }

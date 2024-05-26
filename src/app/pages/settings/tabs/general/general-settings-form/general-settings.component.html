@@ -1,0 +1,136 @@
+<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+    <div class="px-0">
+      <form [formGroup]="userSettingsForm">
+        <div class="space-y-12">
+          <div class="border-b border-gray-900/10 pb-12">
+            <div class="grid grid-cols-1 gap-y-4 sm:grid-cols-6">
+                @if(fieldName === 'userName') {
+                    <div class="col-span-full flex flex-col w-full items-center">
+                        <label for="user-name" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Name*</label>
+                        <div class="mt-2 w-full">
+                          <input type="text" name="user-name" formControlName="userName" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                          <div *ngIf="userSettingsForm.get('userName')?.errors && userSettingsForm.get('userName')?.touched" class="text-red-600 text-sm mt-1">
+                            {{ userSettingsForm.get('userName')?.errors?.['required'] ? 'Name is required' : '' }}
+                          </div>
+                        </div>
+                    </div>
+                }
+                @if(fieldName === 'userImage') {
+                    <div class="col-span-full">
+                        <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">User Image</label>
+                        <app-file-uploader [imageUrl]="imageUrl" (uploadCompleted)="onFileUpload($event)"></app-file-uploader>
+                    </div>
+                }
+                @if(fieldName === 'companyLogo') {
+                    <div class="col-span-full">
+                        <label for="cover-photo" class="block text-sm font-medium leading-6 text-gray-900">Company Logo</label>
+                        <app-file-uploader [imageUrl]="companyLogoUrl" (uploadCompleted)="onCompanyLogoUpload($event)"></app-file-uploader>
+                    </div>
+                }
+                @if(fieldName === 'company') {
+                    <div class="col-span-full flex flex-col w-full items-center">
+                        <label for="company" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                          Company*
+                        </label>
+                        <div class="mt-2 w-full">
+                          <p-dropdown 
+                                appendTo="body"
+                              formControlName="company"
+                              class="custom-input-class"
+                              [options]="companies" [filter]="true" filterBy="label" placeholder="Select a Company"></p-dropdown>
+                          <div *ngIf="userSettingsForm.get('company')?.errors && userSettingsForm.get('company')?.touched" class="text-red-600 text-sm mt-1">
+                            {{ userSettingsForm.get('company')?.errors?.['required'] ? 'Company is required' : '' }}
+                          </div>
+                        </div>
+                    </div>
+                }
+                @if(fieldName === 'country') {
+                    <div class="col-span-full flex flex-col w-full items-center">
+                        <label for="country" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                          Country*
+                        </label>
+                        <div class="mt-2 w-full">
+                          <p-dropdown 
+                                appendTo="body"
+                              formControlName="country"
+                              class="custom-input-class"
+                              [options]="countries" [filter]="true" filterBy="label" placeholder="Select a Country"></p-dropdown>
+                          <div *ngIf="userSettingsForm.get('country')?.errors && userSettingsForm.get('country')?.touched" class="text-red-600 text-sm mt-1">
+                            {{ userSettingsForm.get('country')?.errors?.['required'] ? 'Country is required' : '' }}
+                          </div>
+                        </div>
+                    </div>
+                }
+                @if(fieldName === 'language') {
+                    <div class="col-span-full flex flex-col w-full items-center">
+                        <label for="language" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                            Language*
+                        </label>
+                        <div class="mt-2 w-full">
+                          <p-dropdown 
+                                appendTo="body"
+                              formControlName="language"
+                              class="custom-input-class"
+                              [options]="languages" [filter]="true" filterBy="label" placeholder="Select a Language"></p-dropdown>
+                          <div *ngIf="userSettingsForm.get('language')?.errors && userSettingsForm.get('language')?.touched" class="text-red-600 text-sm mt-1">
+                            {{ userSettingsForm.get('language')?.errors?.['required'] ? 'Language is required' : '' }}
+                          </div>
+                        </div>
+                    </div>
+                }
+                @if(fieldName === 'dateFormat') {
+                    <div class="col-span-full flex flex-col w-full items-center">
+                        <label for="dateFormat" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                            Date Format*
+                        </label>
+                        <div class="mt-2 w-full">
+                          <p-dropdown 
+                                appendTo="body"
+                                formControlName="dateFormat"
+                                class="custom-input-class"
+                                [options]="dateFormats" [filter]="true" filterBy="label" placeholder="Select a Date Format"></p-dropdown>
+                          <div *ngIf="userSettingsForm.get('dateFormat')?.errors && userSettingsForm.get('dateFormat')?.touched" class="text-red-600 text-sm mt-1">
+                            {{ userSettingsForm.get('dateFormat')?.errors?.['required'] ? 'Date Format is required' : '' }}
+                          </div>
+                        </div>
+                    </div>
+                }
+                @if(fieldName === 'currency') {
+                    <div class="col-span-full flex flex-col w-full items-center">
+                        <label for="currency" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">
+                            Currency*
+                        </label>
+                        <div class="mt-2 w-full">
+                          <p-dropdown 
+                                appendTo="body"
+                              formControlName="currency"
+                              class="custom-input-class"
+                              [options]="currencies" [filter]="true" filterBy="label" placeholder="Select a Currency"></p-dropdown>
+                          <div *ngIf="userSettingsForm.get('currency')?.errors && userSettingsForm.get('currency')?.touched" class="text-red-600 text-sm mt-1">
+                            {{ userSettingsForm.get('currency')?.errors?.['required'] ? 'Currency is required' : '' }}
+                          </div>
+                        </div>
+                    </div>
+                }
+                
+            </div>
+          </div>
+        </div>
+    </form>
+    
+    </div>
+  </div>
+  <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+    <button 
+        type="button" 
+        class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold  shadow-sm sm:ml-3 sm:w-auto"
+        [ngClass]="{'bg-gray-600 hover:bg-gray-500 text-white': userSettingsForm.valid, 'bg-white text-gray-900': !userSettingsForm.valid}"
+        [disabled]="!userSettingsForm.valid"
+        (click)="onSubmit()"
+    >Save</button>
+    <button 
+        type="button" 
+        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+        (click)="cancel()"
+    >Cancel</button>
+  </div>
