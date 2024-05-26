@@ -63,4 +63,14 @@ export class CustomersService extends BaseService {
         })
       );
   }
+
+  public createCustomersList$(): Observable<any> {
+    return this.http.get(`/customers/list`)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
 }

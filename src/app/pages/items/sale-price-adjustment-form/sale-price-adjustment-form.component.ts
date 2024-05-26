@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, CreateEffectOptions, effect, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Item } from '@common/interfaces/items.interface';
+import { CurrencyService } from '@common/services/currency/currency.service';
+import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
 import { CalendarModule } from 'primeng/calendar';
 import { InputNumberModule } from 'primeng/inputnumber';
 
@@ -13,6 +15,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
   styleUrl: './sale-price-adjustment-form.component.scss'
 })
 export class SalePriceAdjustmentFormComponent implements OnInit, OnChanges {
+  private dataSharingService = inject(DataSharingService);
+  private currencyService = inject(CurrencyService);
+  userSettings!: any;
   @Input() data!: Item;
   @Output() submitEvent = new EventEmitter<any>();
   @Output() cancelEvent = new EventEmitter<any>();
@@ -20,6 +25,13 @@ export class SalePriceAdjustmentFormComponent implements OnInit, OnChanges {
   minDate!: Date;
 
   constructor() {
+    const options: CreateEffectOptions = {
+      allowSignalWrites: true
+    };
+    // Use effect to react to signal changes
+    effect(() => {
+      this.userSettings = this.dataSharingService.userSettings();
+    }, options);
   }
 
   ngOnInit() {
@@ -66,5 +78,12 @@ export class SalePriceAdjustmentFormComponent implements OnInit, OnChanges {
     if (this.priceAdjustmentForm.valid) {
       this.submitEvent.emit(this.priceAdjustmentForm.value);
     }
+  }
+
+  get currencySymbol() {
+    if (this.userSettings?.currency) {
+      return this.currencyService.getCurrencySymbol(this.userSettings.currency)
+    }
+    return '€';
   }
 }

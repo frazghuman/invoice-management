@@ -12,6 +12,7 @@ import { BackdropService } from '@common/services/signals/backdrop.service';
 export class ConfirmDialogComponent implements OnChanges {
   backDropService = inject(BackdropService);
   @Input() showDialog!:boolean;
+  @Input() allowHide:boolean = true;
   @Input() data!: any;
   @Input() title!: string;
 

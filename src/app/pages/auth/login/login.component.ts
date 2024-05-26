@@ -64,7 +64,7 @@ export class LoginComponent {
         (error: any) => {
           if (error?.status === 401) {
             // Handle unauthorized error
-            this.errorMessage = error.error.message;
+            this.errorMessage = error?.error?.message?.message;
             // Display or handle the error message as needed
           } else {
             // Handle other errors

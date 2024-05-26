@@ -94,6 +94,13 @@ body .p-autocomplete.p-component.p-inputwrapper {
   }
 }
 
+body p-dropdown .p-component.p-inputwrapper {
+  width: 100%;
+  .p-dropdown-label.p-inputtext.p-component {
+    width: 100%;
+  }
+}
+
 body .p-inputnumber-input {
   padding: 0 0.5rem;
 }
@@ -153,4 +160,22 @@ body .p-checkbox .p-checkbox-box.p-highlight {
 body .p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
   color: #495057;
   background: #FFF;
+}
+
+body .p-inputtext:disabled {
+  background-color: #f6f6f6; /* Light grey background */
+  border: 1px solid #e5e5e5; /* Light grey border */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+  opacity: 0.9; /* Make the element slightly transparent */
+}
+
+body .p-inputnumber .p-inputtext:disabled {
+  background-color: #f6f6f6; /* Light grey background */
+  border: 1px solid #e5e5e5; /* Light grey border */
+  cursor: not-allowed; /* Change cursor to indicate disabled state */
+  opacity: 0.9; /* Make the element slightly transparent */
+}
+
+body .material-icons.action {
+  font-size: 15px;
 }

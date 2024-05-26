@@ -22,4 +22,45 @@ export class InventoryService extends BaseService {
         })
       );
   }
+
+  public updateInventory$(inventoryData: any, inventoryId: string): Observable<any> {
+    return this.http.put(`/inventory/${inventoryId}`, inventoryData)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public deleteInventory$(inventoryId: string): Observable<any> {
+    return this.http.delete(`/inventory/${inventoryId}`)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public largestLotNo$(itemId: string): Observable<any> {
+    return this.http.get(`/inventory/${itemId}/largest-lot-no`)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public inventoriesByItemId$(itemId: string): Observable<any> {
+    return this.http.get(`/inventory/${itemId}/inventories`)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
 }

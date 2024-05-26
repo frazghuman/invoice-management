@@ -14,13 +14,14 @@ export class ItemsService extends BaseService {
     super();
   }
 
-  public getItems$(page: number = 1, itemsPerPage: number = 16): Observable<ItemsPaginator> {
+  public getItems$(params: any, page: number = 1, itemsPerPage: number = 16): Observable<ItemsPaginator> {
     return this.http.get<ItemsJsonResponse>(
       '/items',
       {
         params: {
           limit: itemsPerPage,
-          skip: itemsPerPage * (page - 1)
+          skip: itemsPerPage * (page - 1),
+          ...params
         }
       }
     ).pipe(
@@ -68,6 +69,16 @@ export class ItemsService extends BaseService {
         map(response => {
           // Process the response if needed
           return response;
+        })
+      );
+  }
+
+  public getItemsList$(): Observable<any> {
+    return this.http.get(`/items/list`)
+      .pipe(
+        map((response: any) => {
+          // Process the response if needed
+          return response.data;
         })
       );
   }

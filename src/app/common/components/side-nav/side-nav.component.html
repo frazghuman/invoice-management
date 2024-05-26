@@ -1,4 +1,12 @@
-
+<p-toast position="top-right"></p-toast>
+<app-confirm-dialog [showDialog]="showCompanySelectionDialog" (hide)="onHideCompanySelectionDialog($event)" 
+    [title]="'Select ' + fieldName" [allowHide]="false">
+    <app-general-settings
+    [fieldName]="fieldName"
+    (submitEvent)="onSubmitUserSettings($event)"
+    (cancelEvent)="onHideCompanySelectionDialog($event)"
+></app-general-settings>
+</app-confirm-dialog>
 <button (click)="toggleSidebar()" data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" class=" z-30 fixed inline-flex items-center p-2 mt-3 ms-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 ">
     <span class="sr-only">Open sidebar</span>
     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -11,11 +19,21 @@
         <div>
             <div class="flex min-w-0 gap-x-4 mb-8">
                 <div class="flex justify-center items-center overflow-hidden h-12 w-12 flex-none rounded-full bg-gray-50">
-                    <img class="w-full h-auto" src="https://i.stack.imgur.com/l60Hf.png" alt="">
+                    <img class="w-full h-auto" [src]="userSettings?.userImage ? completeUrl(userSettings?.userImage) : userSettings?.user?.image ? completeUrl(userSettings?.user?.image) : 'https://i.stack.imgur.com/l60Hf.png'" alt="">
                 </div>
                 <div class="min-w-0 flex-auto">
-                  <p class="text-sm font-semibold leading-6 text-gray-900">Leslie Alexander</p>
-                  <p class="mt-1 truncate text-xs leading-5 text-gray-500">leslie.alexander.com</p>
+                    <p class="flex justify-between text-sm font-semibold leading-6 text-gray-900">{{userSettings?.userName ? userSettings?.userName : userSettings?.user?.name}}
+                        <a class="cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
+                            (click)="onEdit('language')">
+                            <i class="text-xs material-icons">language</i>
+                        </a>
+                    </p>
+                    <p class="flex justify-between mt-1 truncate text-xs leading-5 text-gray-500">{{userSettings?.company?.name}}
+                        <a class="cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
+                            (click)="onEdit('company')">
+                            <i class="text-xs material-icons">edit</i>
+                        </a>
+                    </p>
                 </div>
             </div>
             <ul class="space-y-2 font-medium">

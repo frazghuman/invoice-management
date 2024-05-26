@@ -25,6 +25,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './settings.component.scss'
 })
 export class SettingsComponent extends BaseComponent {
+  activeIndex = 0; // Default to the first tab
 
   constructor(protected override authService: AuthService) {
     super(authService);
