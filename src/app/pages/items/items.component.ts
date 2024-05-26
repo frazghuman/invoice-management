@@ -69,8 +69,6 @@ export class ItemsComponent {
 
   serverBaseUrl = serverUrl;
 
-  serverBaseUrl = serverUrl;
-
   actionItems!: MenuItem[];
   sortOptions!: MenuItem[];
   sortOrder: string = 'nameAsc';
