@@ -13,7 +13,7 @@ import { MenuModule } from 'primeng/menu';
 import { BehaviorSubject, debounceTime, Observable, scan, Subject, switchMap, tap } from 'rxjs';
 import { CompanyFormComponent } from './company-form/company-form.component';
 import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 import { parseSortString } from '@common/funtions/parse-sort-string';
 import { FormsModule } from '@angular/forms';
 import { ToastWrapperModule } from '@common/shared/toast.module';

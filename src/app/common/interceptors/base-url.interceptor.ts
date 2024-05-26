@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 
 @Injectable()
 export class BaseUrlInterceptor implements HttpInterceptor {

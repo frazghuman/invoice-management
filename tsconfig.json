@@ -26,6 +26,7 @@
     "paths": {
       "@common/*": ["src/app/common/*"],
       "@pages/*": ["src/app/pages/*"],
+      "@environment": ["src/environment"],
     }
   },
   "angularCompilerOptions": {

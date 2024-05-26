@@ -14,7 +14,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 
 @Component({
   selector: 'app-invoice-create',

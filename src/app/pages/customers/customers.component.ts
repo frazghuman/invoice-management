@@ -16,7 +16,7 @@ import fadeInOutAnimation from '@common/animations/fade-in-out.animation';
 import { CustomerFormComponent } from './customer-form/customer-form.component';
 import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
 import { ToastWrapperModule } from '@common/shared/toast.module';
-import { serverUrl } from 'src/environment';
+import { serverUrl } from '@environment';
 import { parseSortString } from '@common/funtions/parse-sort-string';
 
 @Component({
