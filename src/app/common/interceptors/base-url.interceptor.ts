@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class BaseUrlInterceptor implements HttpInterceptor {
   // private baseUrl: string = '/api'; // Replace with your base URL
-  private baseUrl: string = 'http://localhost:3000'; // Replace with your base URL
+  private baseUrl: string = 'http://35.180.209.18:3000'; // Replace with your base URL
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const isFileUploadRequest = request.url.includes('/file/upload');
