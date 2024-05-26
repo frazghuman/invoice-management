@@ -11,11 +11,20 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { GeneralSettingsComponent } from '@pages/settings/tabs/general/general-settings-form/general-settings.component';
 import { ToastWrapperModule } from '@common/shared/toast.module';
 import { MessageService } from 'primeng/api';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-side-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule, ToastWrapperModule, SvgIconComponent, ConfirmDialogComponent, GeneralSettingsComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ToastWrapperModule,
+    SvgIconComponent,
+    ConfirmDialogComponent,
+    GeneralSettingsComponent,
+    TooltipModule
+  ],
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.scss'
 })

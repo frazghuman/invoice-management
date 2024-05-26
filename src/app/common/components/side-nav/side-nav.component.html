@@ -22,14 +22,18 @@
                     <img class="w-full h-auto" [src]="userSettings?.userImage ? completeUrl(userSettings?.userImage) : userSettings?.user?.image ? completeUrl(userSettings?.user?.image) : 'https://i.stack.imgur.com/l60Hf.png'" alt="">
                 </div>
                 <div class="min-w-0 flex-auto">
-                    <p class="flex justify-between text-sm font-semibold leading-6 text-gray-900">{{userSettings?.userName ? userSettings?.userName : userSettings?.user?.name}}
-                        <a class="cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
+                    <p class="flex justify-between text-sm font-semibold leading-6 text-gray-900 max-w-full">
+                        <span class="w-4/5 truncate" >
+                            {{userSettings?.userName ? userSettings?.userName : userSettings?.user?.name}}
+                        </span>
+                        <a class="w-1/5 cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
                             (click)="onEdit('language')">
                             <i class="text-xs material-icons">language</i>
                         </a>
                     </p>
-                    <p class="flex justify-between mt-1 truncate text-xs leading-5 text-gray-500">{{userSettings?.company?.name}}
-                        <a class="cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
+                    <p class="flex justify-between mt-1 truncate text-xs leading-5 text-gray-500 max-w-full">
+                        <span class="w-4/5 truncate" [pTooltip]="userSettings?.company?.name" tooltipPosition="top" >{{userSettings?.company?.name}}</span>
+                        <a class="w-1/5 cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
                             (click)="onEdit('company')">
                             <i class="text-xs material-icons">edit</i>
                         </a>
@@ -52,21 +56,21 @@
                     <a [routerLink]="'/invoice'" class="flex items-center p-2 cursor-pointer text-gray-900 rounded-lg  hover:bg-gray-100 group">
                         <app-svg-icon [icon]="'invoice'"></app-svg-icon>
                         <span class="flex-1 ms-3 whitespace-nowrap">Invoice</span>
-                        <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span>
+                        <!-- <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span> -->
                     </a>
                 </li>
                 <li>
                     <a [routerLink]="'/proposals'" class="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100  group">
                         <app-svg-icon [icon]="'proposals'"></app-svg-icon>
                         <span class="flex-1 ms-3 whitespace-nowrap">Proposals</span>
-                        <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span>
+                        <!-- <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span> -->
                     </a>
                 </li>
                 <li>
                     <a [routerLink]="'/bill'" class="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100  group">
                         <app-svg-icon [icon]="'bill'"></app-svg-icon>
                         <span class="flex-1 ms-3 whitespace-nowrap">Bill</span>
-                        <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span>
+                        <!-- <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span> -->
                     </a>
                 </li>
              </ul>

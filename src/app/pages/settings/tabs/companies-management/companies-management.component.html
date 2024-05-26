@@ -62,10 +62,10 @@
                     <div class="min-w-0 flex-auto">
                     <p class="text-sm font-semibold leading-6 text-gray-900">{{ company.name }}</p>
                     <p class="hidden sm:flex items-center mt-1 truncate text-xs leading-5 text-gray-500">
-                        {{company.phone}}
+                        {{company?.phone?.length ? company.phone : 'N/A'}}
                     </p>
                     <p class="sm:hidden mt-1 truncate text-xs leading-5 text-gray-500">
-                        Phone: {{company.phone}}, CIF: {{company.cif}}
+                        Phone: {{company?.phone?.length ? company.phone : 'N/A'}}, CIF: {{company.cif.length ? company.cif : 'N/A'}}
                     </p>
                     </div>
                     
@@ -73,11 +73,11 @@
                 <div class="flex flex-row items-center">
                     <div class="hidden shrink-0 w-44 lg:flex lg:flex-col lg:items-start">
                         <p class="text-sm leading-6 text-gray-900">Email</p>
-                        <p class="w-full overflow-hidden text-ellipsis mt-1 text-xs leading-5 text-gray-500">{{ company.email }}</p>
+                        <p class="w-full overflow-hidden text-ellipsis mt-1 text-xs leading-5 text-gray-500">{{ company.email.length ? company.email : 'N/A' }}</p>
                     </div>
                     <div class="hidden shrink-0 w-28 sm:flex sm:flex-col sm:items-start">
                         <p class="text-sm leading-6 text-gray-900">CIF</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500">{{company.cif}}</p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500">{{company.cif.length ? company.cif : 'N/A'}}</p>
                     </div>
                     <div class="ml-4">
                         <span (click)="generateMenuItems($event, company, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
@@ -100,13 +100,18 @@
                     </div>
                     <div class="flex w-full flex-row justify-start items-center mx-6 border-b-2 border-zinc-200">
                         <div class="shrink-0 w-44 lg:hidden flex lg:flex-col lg:items-start ml-4">
-                            <p class="mt-1 text-xs leading-5 text-gray-800">{{ company.email }}</p>
+                            <p class="mt-1 text-xs leading-5 text-gray-800">{{ company?.email?.length ? company?.email : 'N/A' }}</p>
                         </div>
                         <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
-                            <p class="mt-1 truncate text-xs leading-5 text-gray-800">{{company.businessNo}}</p>
+                            <p class="mt-1 truncate text-xs leading-5 text-gray-800">{{company?.businessNo?.length ? company?.businessNo : 'N/A'}}</p>
                         </div>
                         <div class="shrink-0 w-auto sm:flex sm:flex-col sm:items-start ml-4">
-                            <p class="w-[22rem] max-w-full mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="company.address" [limit]="45"></p>
+                            @if(company?.address?.length) {
+
+                                <p class="w-[22rem] max-w-full mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="company.address" [limit]="45"></p>
+                            } @else {
+                                <p class="w-[22rem] max-w-full mt-1 text-xs leading-5 text-gray-800">N/A</p>
+                            }
                         </div>
                     </div>
                 </div>

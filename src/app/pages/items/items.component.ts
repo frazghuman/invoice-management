@@ -192,7 +192,10 @@ export class ItemsComponent {
       tap(() => this.loading$.next(true)),
       switchMap((page) => this.api.getItems$(this.params, page)),
       scan(this.updatePaginator, {items: [], page: 0, hasMorePages: true} as ItemsPaginator),
-      tap(() => this.loading$.next(false)),
+      tap(() => {
+        this.loading$.next(false);
+        this.expandStockDetail = {};
+      }),
     );
   }
 
@@ -378,10 +381,12 @@ export class ItemsComponent {
     this.api.addItemPrice$(itemId, data).subscribe({
       next: (response) => {
         this.showItemPriceUpdateDialog = false;
+        this.selectedItem['latestPrice'] = this.selectedItem?.latestPrice ?? {};
+        this.selectedItem.latestPrice['salePrice'] = data.salePrice;
         this.selectedItem = null;
         console.log('Update successful', response);
-        this.page$.next(1);
-        window.scrollTo(0, 0); 
+        // this.page$.next(1);
+        // window.scrollTo(0, 0); 
       },
       error: (error) => {
         console.error('Update failed', error);

@@ -14,15 +14,6 @@
                     </div>
                 </div>
                 <div class="col-span-full flex flex-col w-full items-center">
-                    <label for="phone" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Phone*</label>
-                    <div class="mt-2 w-full">
-                      <input type="phone" name="phone" formControlName="phone" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                      <div *ngIf="companyForm.get('phone')?.errors && companyForm.get('phone')?.touched" class="text-red-600 text-sm mt-1">
-                        {{ companyForm.get('phone')?.errors?.['required'] ? 'Phone is required' : '' }}
-                      </div>
-                    </div>
-                </div>
-                <div class="col-span-full flex flex-col w-full items-center">
                     <label for="email" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Email*</label>
                     <div class="mt-2 w-full">
                       <input type="text" name="email" formControlName="email" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -33,7 +24,16 @@
                     </div>
                 </div>
                 <div class="col-span-full flex flex-col w-full items-center">
-                    <label for="cif" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">CIF*</label>
+                    <label for="phone" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Phone</label>
+                    <div class="mt-2 w-full">
+                      <input type="phone" name="phone" formControlName="phone" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                      <div *ngIf="companyForm.get('phone')?.errors && companyForm.get('phone')?.touched" class="text-red-600 text-sm mt-1">
+                        {{ companyForm.get('phone')?.errors?.['required'] ? 'Phone is required' : '' }}
+                      </div>
+                    </div>
+                </div>
+                <div class="col-span-full flex flex-col w-full items-center">
+                    <label for="cif" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">CIF</label>
                     <div class="mt-2 w-full">
                       <input type="string" name="cif" formControlName="cif" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                       <div *ngIf="companyForm.get('cif')?.errors && companyForm.get('cif')?.touched" class="text-red-600 text-sm mt-1">
@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div class="col-span-full flex flex-col w-full items-center">
-                    <label for="businessNo" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Business No*</label>
+                    <label for="businessNo" class="pr-4 w-full block text-sm text-left font-medium leading-6 text-gray-900">Business No</label>
                     <div class="mt-2 w-full">
                       <input type="string" name="businessNo" formControlName="businessNo" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                       <div *ngIf="companyForm.get('businessNo')?.errors && companyForm.get('businessNo')?.touched" class="text-red-600 text-sm mt-1">
