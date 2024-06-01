@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, CreateEffectOptions, OnInit, effect, inject } from '@angular/core';
 import { PageHeaderComponent } from '@common/components/layout/page-header/page-header.component';
 import { UsersManagementPaginator } from '@common/interfaces/user-management.interface';
 import { UserManagementService } from '@common/services/user-management/user-management.service';
@@ -19,6 +19,8 @@ import { UserFormComponent } from './user-form/user-form.component';
 import { serverUrl } from '@environment';
 import { ToastWrapperModule } from '@common/shared/toast.module';
 import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
+import { SettingsService } from '@common/services/settings/settings.service';
+import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
 
 @Component({
   selector: 'app-user-management',
@@ -44,6 +46,8 @@ export class UserManagementComponent implements OnInit {
   private api = inject(UserManagementService);
   private messageService: MessageService = inject(MessageService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
+  private settingsService: SettingsService = inject(SettingsService);
+  private dataSharingService: DataSharingService = inject(DataSharingService);
 
   public paginator$: Observable<UsersManagementPaginator>;
   private searchSubject = new Subject<string>();
@@ -65,8 +69,17 @@ export class UserManagementComponent implements OnInit {
   expandUserManagementDetail: any = {};
 
   serverBaseUrl = serverUrl;
+  userSettings!: any;
   constructor() {
     this.paginator$ = this.loadUsers$();
+
+    const options: CreateEffectOptions = {
+      allowSignalWrites: true
+    };
+    // Use effect to react to signal changes
+    effect(() => {
+      this.userSettings = this.dataSharingService.userSettings();
+    }, options);
   }
 
   ngOnInit(): void {
@@ -161,24 +174,28 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteAction(user: any, index: number) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this company?',
-      header: 'Delete Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-          if (user._id) {
-            console.log('Accepted');
-            this.deleteUser(user._id);
-          }
-      },
-      reject: () => {
-          console.log('Rejected');
-      },
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      rejectButtonStyleClass: 'mr-4 mt-3 inline-flex w-full justify-center rounded-md text-white px-3 py-2 text-sm font-semibold bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:text-gray-900 sm:mt-0 sm:w-auto',
-      acceptButtonStyleClass: 'mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-800 hover:text-gray-50 sm:mt-0 sm:w-auto'
-    });
+    if (user?._id === this.userSettings?.user?._id) {
+      this.showError('Unauthorized Access Error', 'You are not permitted to delete the currently logged-in user.');
+    } else {
+      this.confirmationService.confirm({
+        message: 'Are you sure you want to delete this company?',
+        header: 'Delete Confirmation',
+        icon: 'pi pi-info-circle',
+        accept: () => {
+            if (user._id) {
+              console.log('Accepted');
+              this.deleteUser(user._id);
+            }
+        },
+        reject: () => {
+            console.log('Rejected');
+        },
+        acceptLabel: 'Yes',
+        rejectLabel: 'No',
+        rejectButtonStyleClass: 'mr-4 mt-3 inline-flex w-full justify-center rounded-md text-white px-3 py-2 text-sm font-semibold bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:text-gray-900 sm:mt-0 sm:w-auto',
+        acceptButtonStyleClass: 'mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-800 hover:text-gray-50 sm:mt-0 sm:w-auto'
+      });
+    }
   }
 
   private loadUsers$(): Observable<UsersManagementPaginator> {

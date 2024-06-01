@@ -71,15 +71,15 @@
                 <div class="flex flex-row items-center">
                     <div class="hidden shrink-0 w-28 sm:flex sm:flex-col sm:items-start">
                         <p class="text-sm leading-6 text-gray-900">Phone</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500"><a [href]="'tel:'+customer.phone">{{customer.phone}}</a></p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500"><a [href]="'tel:'+customer.phone">{{ !customer.phone ? 'N/A' : customer.phone }}</a></p>
                     </div>
                     <div class="hidden shrink-0 w-28 sm:flex sm:flex-col sm:items-start">
                         <p class="text-sm leading-6 text-gray-900">Email</p>
-                        <p class="w-full overflow-hidden text-ellipsis mt-1 text-xs leading-5 text-gray-500">{{ customer.email }}</p>
+                        <p class="w-full overflow-hidden text-ellipsis mt-1 text-xs leading-5 text-gray-500">{{ !customer.email ? 'N/A' : customer.email }}</p>
                     </div>
-                    <div class="hidden shrink-0 w-28 lg:flex lg:flex-col lg:items-start ml-12">
-                        <p class="text-sm leading-6 text-gray-900">Created Date</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500">{{customer.createdAt| date:'d MMM, y'}} </p>
+                    <div class="hidden shrink-0 w-32 lg:flex lg:flex-col lg:items-start ml-12">
+                        <p class="text-sm leading-6 text-gray-900">Last Updated</p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500">{{customer.updatedAt| date:'d MMM, y HH:mm:ss a'}} </p>
                     </div>
                     <div class="ml-4">
                         <span (click)="generateMenuItems($event, customer, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
@@ -100,10 +100,10 @@
                             <p class="text-xs font-semibold leading-6 text-zinc-800">Business Name</p>
                         </div>
                         <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
-                            <p class="text-xs font-semibold leading-6 text-zinc-800">CIF</p>
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">NIF</p>
                         </div>
                         <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
-                            <p class="text-xs font-semibold leading-6 text-zinc-800">NIF</p>
+                            <p class="text-xs font-semibold leading-6 text-zinc-800">CIF</p>
                         </div>
                         <div class="shrink-0 w-56 sm:flex sm:flex-col sm:items-start ml-4">
                             <p class="text-xs font-semibold leading-6 text-zinc-800">Address</p>
@@ -138,7 +138,16 @@
                 </div>
             </li>
         } @empty {
-            Empty list of Customer
+            <li class="flex justify-between gap-x-6 py-5">
+                <div class="flex w-full flex-col justify-center items-center mx-6 h-[50vh]">
+                    <span class="material-icons text-9xl">
+                        receipt_long
+                    </span>
+                    <p class="text-2xl font-semibold leading-6 text-zinc-800 text-center">
+                        No customer found!
+                    </p>
+                </div>
+            </li>
         }
         @if (loading$ | async) {
             <li class="flex justify-between gap-x-6 py-5">

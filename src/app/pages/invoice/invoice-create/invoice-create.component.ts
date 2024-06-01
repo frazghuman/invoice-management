@@ -15,6 +15,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { serverUrl } from '@environment';
+import { allowLastItemInvalidValidator } from '@common/validators/allow-last-item-invalid.validator';
 
 @Component({
   selector: 'app-invoice-create',
@@ -73,7 +74,7 @@ export class InvoiceCreateComponent {
       customer: ['', Validators.required],
       date: [new Date(), Validators.required],
       dueDate: [new Date(), Validators.required],
-      items: this.fb.array([this.createItem()]), // Initialize with one item row
+      items: this.fb.array([this.createItem()]), //, allowLastItemInvalidValidator()]), // Initialize with one item row
       subtotal: [0],
       discount: [null],
       shippingCharges: [null],

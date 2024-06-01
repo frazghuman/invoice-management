@@ -56,14 +56,16 @@
                                     <div class="dropdown-item">
                                         <div class="dropdown-item-name">{{ item?.customer?.name }}</div>
                                         <div class="dropdown-item-details">
-                                        {{ item?.customer?.businessName }}, 
-                                        @if(item?.customer?.cif){ CIF: } {{ item?.customer?.cif }}, 
+                                        {{ item?.customer?.businessName }}
+                                        @if(item?.customer?.businessName && item?.customer?.cif){,}
+                                        @if(item?.customer?.cif){ CIF: } {{ item?.customer?.cif }}
+                                        @if(item?.customer?.cif && item?.customer?.nif){,} 
                                         @if(item?.customer?.nif){ NIF: } {{ item?.customer?.nif }}</div>
                                     </div>
                                 </div>
                             </ng-template>
                             <ng-template let-selectedItem pTemplate="selectedItem">
-                                {{ selectedItem?.customer?.name }} ({{ selectedItem?.customer?.businessName }})
+                                {{ selectedItem?.customer?.name }} @if(selectedItem?.customer?.businessName) {({{ selectedItem?.customer?.businessName }})}
                             </ng-template>
                         </p-dropdown>
                     </div>

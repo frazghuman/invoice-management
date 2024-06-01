@@ -12,6 +12,7 @@ import { GeneralSettingsComponent } from '@pages/settings/tabs/general/general-s
 import { ToastWrapperModule } from '@common/shared/toast.module';
 import { MessageService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-side-nav',
@@ -28,7 +29,7 @@ import { TooltipModule } from 'primeng/tooltip';
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.scss'
 })
-export class SideNavComponent implements OnInit {
+export class SideNavComponent extends BaseComponent implements OnInit {
   backDropService = inject(BackdropService);
   messageService = inject(MessageService);
   showSideBar: boolean = false;
@@ -42,11 +43,12 @@ export class SideNavComponent implements OnInit {
   }
 
   constructor(
-    private authService: AuthService,
+    protected override authService: AuthService,
     private router: Router,
     private settingsService: SettingsService,
     private dataSharingService: DataSharingService
   ) {
+    super(authService);
     const options: CreateEffectOptions = {
       allowSignalWrites: true
     };
