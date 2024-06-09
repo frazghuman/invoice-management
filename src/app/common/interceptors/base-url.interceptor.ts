@@ -10,7 +10,7 @@ export class BaseUrlInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const isFileUploadRequest = request.url.includes('/file/upload');
-    const hasBaseUrl = request.url.includes('https://');
+    const hasBaseUrl = request.url.includes('https://') || request.url.includes('assets/i18n');
 
     const modifiedRequest = request.clone({
       url: `${!hasBaseUrl ? this.baseUrl : ''}${request.url}`,

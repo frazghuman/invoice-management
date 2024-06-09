@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, CreateEffectOptions, effect, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { PageHeaderComponent } from '@common/components/layout/page-header/page-header.component';
 import { CurrencyService } from '@common/services/currency/currency.service';
 import { CustomersService } from '@common/services/customers/customers.service';
 import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
 import { ItemsService } from '@common/services/items/items.service';
-import { SelectItem } from 'primeng/api';
+import { MessageService, SelectItem } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -15,6 +15,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { serverUrl } from '@environment';
+import { InvoicesService } from '@common/services/invoices/invoices.service';
+import { ToastWrapperModule } from '@common/shared/toast.module';
 
 @Component({
   selector: 'app-invoice-create',
@@ -30,10 +32,11 @@ import { serverUrl } from '@environment';
     InputTextareaModule,
     ReactiveFormsModule,
     FormsModule,
-    TooltipModule
+    TooltipModule,
+    ToastWrapperModule
   ],
   templateUrl: './invoice-create.component.html',
-  styleUrl: './invoice-create.component.scss'
+  styleUrls: ['./invoice-create.component.scss']
 })
 export class InvoiceCreateComponent {
   fb = inject(FormBuilder);
@@ -41,6 +44,9 @@ export class InvoiceCreateComponent {
   private currencyService = inject(CurrencyService);
   private customersService = inject(CustomersService);
   private itemsService = inject(ItemsService);
+  private invoicesService = inject(InvoicesService);
+  private messageService: MessageService = inject(MessageService);
+  private router = inject(Router);
 
   customers!: SelectItem[];
   items!: any[];
@@ -55,7 +61,7 @@ export class InvoiceCreateComponent {
     this.items = [];
     for (let i = 0; i < 10000; i++) {
       this.customers.push({ label: 'Customer ' + i, value: 'Customer ' + i });
-      this.items.push({ label: 'Item ' + i, value: {id: i, price: i * 2.5} });
+      this.items.push({ label: 'Item ' + i, value: { id: i, price: i * 2.5 } });
     }
 
     const options: CreateEffectOptions = {
@@ -69,7 +75,6 @@ export class InvoiceCreateComponent {
 
   ngOnInit() {
     this.invoiceForm = this.fb.group({
-      invoiceId: [''],
       customer: ['', Validators.required],
       date: [new Date(), Validators.required],
       dueDate: [new Date(), Validators.required],
@@ -77,7 +82,8 @@ export class InvoiceCreateComponent {
       subtotal: [0],
       discount: [null],
       shippingCharges: [null],
-      amountDue: [0]
+      amountDue: [0],
+      note: ['']
     });
 
     this.invoiceForm.get('subtotal')?.disable();
@@ -92,7 +98,7 @@ export class InvoiceCreateComponent {
       debounceTime(300)
     ).subscribe(() => {
       if (this.itemsFormArray.valid) {
-        console.log('Add new item')
+        console.log('Add new item');
         this.addItem();
       }
     });
@@ -104,7 +110,7 @@ export class InvoiceCreateComponent {
           value: customer._id,
           customer
         };
-      })
+      });
     });
 
     this.itemsService.getItemsList$().subscribe(resp => {
@@ -114,10 +120,8 @@ export class InvoiceCreateComponent {
           value: item._id,
           item
         };
-      })
+      });
     });
-
-    
   }
 
   ngOnDestroy() {
@@ -135,9 +139,9 @@ export class InvoiceCreateComponent {
 
     itemFormGroup.get('item')?.valueChanges.subscribe(selectedItemId => {
       console.log('Selected Item ID:', selectedItemId); // Log the selected item ID
-      const selectedItem = this.items.find((item: any) => item.item._id === selectedItemId);
+      const selectedItem = this.items.find((item: any) => item?.item?._id === selectedItemId);
       console.log('Selected Item:', selectedItem); // Log the selected item
-      
+
       if (selectedItem?.item?.latestPrice?.salePrice) {
         const itemPrice = selectedItem.item.latestPrice.salePrice;
         itemFormGroup.patchValue({
@@ -148,8 +152,7 @@ export class InvoiceCreateComponent {
       }
       itemFormGroup.get('price')?.enable();
 
-      console.log('Item Value', itemFormGroup.value)
-      // this.updateItemTotal(itemFormGroup); // Update the total when the item is selected
+      console.log('Item Value', itemFormGroup.value);
     });
 
     return itemFormGroup;
@@ -172,23 +175,18 @@ export class InvoiceCreateComponent {
     const items = this.invoiceForm.get('items')?.value;
     let subtotal = 0;
     items.forEach((item: any, itemIndex: number) => {
-      const itemVlaue = this.itemsFormArray.at(itemIndex).value;
-      const itemPrice = itemVlaue?.price || null;
-      this.itemsFormArray.at(itemIndex).patchValue({price: itemPrice}, {emitEvent: false});
+      const itemValue = this.itemsFormArray.at(itemIndex).value;
+      const itemPrice = itemValue?.price || null;
+      this.itemsFormArray.at(itemIndex).patchValue({ price: itemPrice }, { emitEvent: false });
       if (this.itemsFormArray.at(itemIndex)?.valid) {
-        
-        let total = (item.quantity * itemPrice);
+        let total = item.quantity * itemPrice;
         subtotal += total;
-        // Check if the itemIndex is within the bounds of the FormArray
         if (itemIndex >= 0 && itemIndex < items.length) {
-          // Create an object that represents the field to be patched
           const patchObject = {
             total: total,
             price: itemPrice
           };
-  
-          // Patch the value of the specific field in the FormGroup at itemIndex
-          this.itemsFormArray.at(itemIndex).patchValue(patchObject, {emitEvent: false});
+          this.itemsFormArray.at(itemIndex).patchValue(patchObject, { emitEvent: false });
         }
       }
     });
@@ -200,12 +198,12 @@ export class InvoiceCreateComponent {
     this.invoiceForm.patchValue({
       subtotal: subtotal,
       amountDue: amountDue
-    }, {emitEvent: false}); // Prevent infinite loop
+    }, { emitEvent: false });
   }
 
   get currencySymbol() {
     if (this.userSettings?.currency) {
-      return this.currencyService.getCurrencySymbol(this.userSettings.currency)
+      return this.currencyService.getCurrencySymbol(this.userSettings.currency);
     }
     return '€';
   }
@@ -215,9 +213,55 @@ export class InvoiceCreateComponent {
   }
 
   submitInvoice() {
-    if (this.invoiceForm.valid) {
-      console.log(this.invoiceForm.value);
+    const itemsArray = this.itemsFormArray;
+    this.removeItem(itemsArray.length - 1);
+
+    if (this.invoiceForm.valid && this.invoiceForm.value.items.length) {
+        console.log(this.invoiceForm.value);
+        this.createInvoice(this.invoiceForm.value);
+    } else {
+        console.log('Form Invalid');
+        this.showError('Invoice Invalid', 'Required fields are missing');
     }
+
+    this.addItem(); // Add the last empty item row back
+  }
+
+  createInvoice(data: any) {
+    this.invoicesService.createInvoice$(data).subscribe({
+      next: (response) => {
+        if (response?._id) {
+          const { _id } = response;
+          this.navigateToInvoice(_id);
+        }
+      },
+      error: (error) => {
+        console.error('Update failed', error);
+        this.handleError(error);
+      }
+    });
+  }
+
+  handleError(errorResp: any) {
+    if (errorResp?.error?.message) {
+      const { error, message } = errorResp?.error?.message;
+      if (error && message) {
+        this.showError(error, message);
+      }
+    }
+  }
+
+  showError(summary:string, detail: string) {
+    this.messageService.add({
+      severity: 'error',
+      summary: summary,
+      detail: detail
+    });
+  }
+
+  navigateToInvoice(invoiceId: string | number): void {
+    // Navigate to the invoice detail route with the given id
+    this.router.navigate(['/invoice', invoiceId]);
   }
 
 }

@@ -64,6 +64,36 @@ export class UserManagementService extends BaseService {
       );
   }
 
+  public getUserByVerificationKey$(activationKey: string): Observable<any> {
+    return this.http.get(`/users/verify/${activationKey}`)
+      .pipe(
+        map((response: any) => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public activateUser$(activationKey: string, verificationData: any): Observable<any> {
+    return this.http.put(`/users/verify/${activationKey}`, verificationData)
+      .pipe(
+        map((response: any) => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public copyActivationLink$(userId: string): Observable<any> {
+    return this.http.get(`/users/${userId}/activation/link`)
+      .pipe(
+        map((response: any) => {
+          // Process the response if needed
+          return response.activationKey;
+        })
+      );
+  }
+
   public resetPassword$(userId: string, passwordResetForm: any): Observable<any> {
     return this.http.put(`/users/${userId}/password/reset`, passwordResetForm)
       .pipe(

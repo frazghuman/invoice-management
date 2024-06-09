@@ -1,0 +1,223 @@
+<p-toast position="top-right"></p-toast>
+<app-page-header class="print:hidden" [heading]="'Invoice'" [heading2]="'Invoice'" [showActionButton]="false"></app-page-header>
+<div class="print:hidden mt-12 flex flex-col sm:flex-row w-full justify-between">
+    <div class="m-4 flex flex-col justify-center">
+        <nav class="flex" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 lg:space-x-2 rtl:space-x-reverse">
+              <li class="inline-flex items-center">
+                <a class="inline-flex items-center text-sm font-medium text-gray-700 ">
+                  <i class="material-icons">description</i>
+                  Documents
+                </a>
+              </li>
+              <li>
+                <div class="flex items-center">
+                    <i class="material-icons">navigate_next</i>
+                    <a [routerLink]="['/invoice']" class="ms-1 text-sm font-medium cursor-pointer text-gray-700 hover:text-blue-600 lg:ms-2">
+                        Invoices
+                    </a>
+                </div>
+              </li>
+              <li aria-current="page">
+                <div class="flex items-center">
+                  <i class="material-icons">navigate_next</i>
+                  <span class="ms-1 text-sm font-medium text-gray-500 lg:ms-2 ">{{invoiceId?.slice(-4)}}</span>
+                </div>
+              </li>
+            </ol>
+          </nav>
+    </div>
+    <div class="m-4 flex justify-end">
+        <a (click)="submitInvoice()" class="cursor-pointer inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-900 py-1 px-3 text-white hover:bg-zinc-700">
+            <span class="mr-2">Save Updates</span> <span class="material-icons">save</span>
+        </a>
+    </div>
+</div>
+<div class="print:hidden w-full inset-x-0 h-px transition bg-zinc-900 opacity-15"></div>
+<div class="custom-page-container w-full flex justify-center">
+    <div class="container">
+        <div class="bg-white pt-0 lg:pt-0 lg:p-16 p-4 print:p-0">
+
+            <form [formGroup]="invoiceForm">
+                <div class="flex flex-col lg:flex-row items-start justify-between my-10">
+                    <div class="w-full">
+                        <span class="text-lg font-bold">Bill to:</span>
+                        <div class="w-full">
+                            <p-dropdown 
+                                formControlName="customer"
+                                class="custom-input-class"
+                                [options]="customers" [filter]="true" filterBy="label" placeholder="Select Customer"
+                                [virtualScroll]="true" [virtualScrollItemSize]="66">
+                            
+                                <ng-template let-item pTemplate="item">
+                                    <div class="flex min-w-0 gap-x-4">
+                                        <div class="hidden md:flex justify-center items-center overflow-hidden h-12 w-12 flex-none rounded-full bg-gray-50">
+                                            <img class="w-full h-auto" [src]="completeUrl(item?.customer?.image)">
+                                        </div>
+                                        <div class="dropdown-item">
+                                            <div class="dropdown-item-name">{{ item?.customer?.name }}</div>
+                                            <div class="dropdown-item-details">
+                                            {{ item?.customer?.businessName }}
+                                            @if(item?.customer?.businessName && item?.customer?.cif){,}
+                                            @if(item?.customer?.cif){ CIF: } {{ item?.customer?.cif }}
+                                            @if(item?.customer?.cif && item?.customer?.nif){,} 
+                                            @if(item?.customer?.nif){ NIF: } {{ item?.customer?.nif }}</div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template let-selectedItem pTemplate="selectedItem">
+                                    {{ selectedItem?.customer?.name }} @if(selectedItem?.customer?.businessName) {({{ selectedItem?.customer?.businessName }})}
+                                </ng-template>
+                            </p-dropdown>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end w-full">
+                        <div class="text-base font-semibold flex flex-col lg:flex-row justify-between items-center mt-2 w-full lg:w-80 h-10">
+                            <div class="lg:w-48 w-full">Invoice # </div>
+                            <div class="text-sm w-full">
+                                {{invoiceId?.slice(-4)}}
+                            </div>
+                        </div>
+                        <div class="text-base font-semibold flex flex-col lg:flex-row justify-between items-center mt-2 w-full lg:w-80">
+                            <div class="flex items-center lg:w-48 h-10 w-full">Date: </div>
+                            <div class="text-sm w-full">
+                                <p-calendar
+                                formControlName="date"
+                                class="custom-input-class sm:pl-2" [iconDisplay]="'input'" [showIcon]="true"></p-calendar>
+                            </div>
+                        </div>
+                        <div class="text-base font-semibold flex flex-col lg:flex-row justify-between items-center mt-2 w-full lg:w-80">
+                            <div class="flex items-center lg:w-48 h-10 w-full">Due Date: </div>
+                            <div class="text-sm w-full">
+                                <p-calendar
+                                formControlName="dueDate"
+                                class="custom-input-class sm:pl-2" [iconDisplay]="'input'" [showIcon]="true"></p-calendar>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="border-collapse table-auto w-full text-sm whitespace-pre">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-4 border border-e-0 max-w-9 min-w-9">
+
+                                </th>
+                                <th class="p-4 border border-e-0 uppercase text-sm font-medium text-start">Product Description</th>
+                                <th class="p-4 border-y uppercase text-sm font-medium ">Price</th>
+                                <th class="p-4 pe-7 border-y uppercase text-sm font-medium">Qty</th>
+                                <th class="p-4 border border-s-0 uppercase text-sm font-medium">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            <ng-container formArrayName="items">
+                                <tr *ngFor="let item of itemsFormArray.controls; let i=index" [formGroupName]="i">
+                                    <td class="text-base font-medium border max-w-9 min-w-9">
+                                        <span (click)="removeItem(i)" class="material-icons cursor-pointer" *ngIf="itemsFormArray.controls.length > 1 && i !== (itemsFormArray.controls.length - 1)">cancel</span>
+                                    </td>
+                                    <td class="text-base font-medium border max-w-60 min-w-60">
+                                        <p-dropdown
+                                        formControlName="item"
+                                        appendTo="body"
+                                        class="custom-input-class !border-none"
+                                        [options]="items" [filter]="true" filterBy="label" placeholder="Select your item to add"
+                                        [virtualScroll]="true" [virtualScrollItemSize]="66">
+                                    
+                                        <ng-template let-item pTemplate="item">
+                                            <div class="flex min-w-0 gap-x-4">
+                                              <div class="hidden md:flex justify-center items-center overflow-hidden h-12 w-12 flex-none rounded-full bg-gray-50">
+                                                <img class="w-full h-auto" [src]="completeUrl(item?.item?.image)">
+                                              </div>
+                                              <div class="dropdown-item flex-1 min-w-0">
+                                                <div class="dropdown-item-name truncate">{{ item?.item?.name }}</div>
+                                                <div class="dropdown-item-details truncate">
+                                                  {{ item?.item?.baseUnitOfMeasure }}
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </ng-template>
+                                        <ng-template let-selectedItem pTemplate="selectedItem">
+                                            <div [pTooltip]="selectedItem?.item?.name + '(' + selectedItem?.item?.baseUnitOfMeasure + ')'" tooltipPosition="top">
+                                                {{ selectedItem?.item?.name }} ({{ selectedItem?.item?.baseUnitOfMeasure }})
+                                            </div>
+                                        </ng-template>
+                                    </p-dropdown>
+                                    </td>
+                                    <td class="text-base font-medium border text-center w-auto">
+                                        <p-inputNumber
+                                        formControlName="price"
+                                        class="custom-input-class number-center !border-none"
+                                        [prefix]="currencySymbol"
+                                        inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"> </p-inputNumber>
+                                    </td>
+                                    <td class="text-base font-medium border text-center w-auto">
+                                        <p-inputNumber
+                                        formControlName="quantity"
+                                        class="custom-input-class number-center !border-none"
+                                        inputId="minmaxfraction" inputId="integeronly"> </p-inputNumber>
+                                    </td>
+                                    <td class="text-base font-medium border text-center max-w-60 min-w-60">
+                                        <p-inputNumber
+                                        formControlName="total"
+                                        class="custom-input-class number-center !border-none"
+                                        [prefix]="currencySymbol"
+                                        inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"> </p-inputNumber>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                            <tr>
+                                <td class="p-8 text-base font-medium border"></td>
+                                <td class="p-8 text-base font-medium border"></td>
+                                <td class="p-8 text-base font-medium border text-center"></td>
+                                <td class="p-8 text-base font-medium border text-center"></td>
+                                <td class="p-8 text-base font-medium border text-center"></td>
+                            </tr>
+                            <tr class="bg-gray-100">
+                                <td colspan="5" class="p-1 ps-5 text-base font-medium border">Note</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" rowspan="3" class="p-5 text-sm font-medium border border-e-0">
+                                    <textarea formControlName="note" class="!h-44 custom-input-class" pInputTextarea ></textarea>
+                                </td>
+                                <td class="flex flex-row justify-center p-5 text-base font-medium border text-center bg-gray-100">
+                                    <div class="flex justify-end w-1/2"><b class="mr-2">Subtotal:</b></div>
+                                    <div class="flex justify-start w-1/2">
+                                        {{currencySymbol}} {{invoiceForm.get('subtotal')?.value?.toFixed(2) || 0}}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="flex flex-row items-center justify-center p-5 text-base font-medium border text-center bg-gray-100">
+                                    <div class="flex justify-end w-1/2"><b class="mr-2">Discount:</b></div>
+                                    <div class="flex justify-start w-1/2">
+                                        <p-inputNumber
+                                        formControlName="discount"
+                                        class="custom-input-class number-center !border-none" [prefix]="currencySymbol"
+                                        inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"> </p-inputNumber>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="flex flex-row items-center justify-center p-5 text-base font-medium border text-center bg-gray-100">
+                                    <div class="flex justify-end w-1/2"><b class="mr-2">Shipping:</b></div>
+                                    <div class="flex justify-start w-1/2">
+                                        <p-inputNumber
+                                        formControlName="shippingCharges"
+                                        class="custom-input-class number-center !border-none" [prefix]="currencySymbol"
+                                        inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"> </p-inputNumber>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="p-5 text-base font-medium border text-end"><b class="mr-2">Amount due:</b> 
+                                    <span>{{currencySymbol}} {{invoiceForm.get('amountDue')?.value?.toFixed(2) || 0}}</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

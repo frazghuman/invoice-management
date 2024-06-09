@@ -36,10 +36,10 @@ export class CompanyFormComponent implements OnInit, OnChanges {
     this.companyForm = new FormGroup({
       name: new FormControl(this.data ? this.data.name : '', Validators.required),
       email: new FormControl(this.data ? this.data.email : '', [Validators.required, Validators.email]),
-      phone: new FormControl(this.data ? this.data.phone : '', Validators.required),
-      businessNo: new FormControl(this.data ? this.data.businessNo : '', Validators.required),
-      address: new FormControl(this.data ? this.data.address : '', Validators.required),
-      cif: new FormControl(this.data ? this.data.cif : '', Validators.required),
+      phone: new FormControl(this.data ? this.data.phone : ''),
+      businessNo: new FormControl(this.data ? this.data.businessNo : ''),
+      address: new FormControl(this.data ? this.data.address : ''),
+      cif: new FormControl(this.data ? this.data.cif : ''),
       logo: new FormControl(this.data?.logo ? this.data.logo : ''),
     });
   }

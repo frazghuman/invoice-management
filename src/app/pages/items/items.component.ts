@@ -26,6 +26,8 @@ import { CustomCurrencyPipe } from '@common/pipes/custom-currency.pipe';
 import { parseSortString } from '@common/funtions/parse-sort-string';
 import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
 import { CurrencyService } from '@common/services/currency/currency.service';
+import { BaseComponent } from '@common/components/base/base.component';
+import { AuthService } from '@common/services/auth/auth.service';
 
 @Component({
   selector: 'app-items',
@@ -51,7 +53,7 @@ import { CurrencyService } from '@common/services/currency/currency.service';
     fadeInOutAnimation,
   ]
 })
-export class ItemsComponent {
+export class ItemsComponent extends BaseComponent {
   private api = inject(ItemsService);
   private inventoryService = inject(InventoryService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
@@ -71,7 +73,7 @@ export class ItemsComponent {
 
   actionItems!: MenuItem[];
   sortOptions!: MenuItem[];
-  sortOrder: string = 'nameAsc';
+  sortOrder: string = 'updatedAtAsc';
   
   selectedSortOrderIcon: string = this.iconOfSelectedSortOrder;
   selectedSortOrderLabel: string = this.labelBySelectedSortOrder;
@@ -86,7 +88,8 @@ export class ItemsComponent {
   selectedStockLot!: any;
   selectedItemId!: string | null;
   
-  constructor() {
+  constructor(protected override authService: AuthService) {
+    super(authService);
     this.paginator$ = this.loadItems$();
     const options: CreateEffectOptions = {
       allowSignalWrites: true
@@ -98,6 +101,9 @@ export class ItemsComponent {
   }
   ngOnInit(): void {
     this.sortOptions = [
+      
+      { label: 'New to Old', icon: 'pi pi-sort-numeric-down', command: () => this.sort('updatedAtAsc') },
+      { label: 'Old to New', icon: 'pi pi-sort-numeric-up', command: () => this.sort('updatedAtDesc') },
       { label: 'Name: A to Z', icon: 'pi pi-sort-alpha-down', command: () => this.sort('nameAsc') },
       { label: 'Name: Z to A', icon: 'pi pi-sort-alpha-up', command: () => this.sort('nameDesc') },
       { label: 'Unit: A to Z', icon: 'pi pi-sort-alpha-down', command: () => this.sort('baseUnitOfMeasureAsc') },
@@ -136,6 +142,12 @@ export class ItemsComponent {
   get iconOfSelectedSortOrder() {
     let icon = 'sort'
     switch (this.sortOrder) {
+      case 'updatedAtAsc':
+        icon = 'pi pi-sort-numeric-down';
+      break;
+      case 'updatedAtDesc':
+        icon = 'pi pi-sort-numeric-up';
+      break;
       case 'nameAsc':
         icon = 'pi pi-sort-alpha-down';
       break;
@@ -160,6 +172,12 @@ export class ItemsComponent {
   get labelBySelectedSortOrder() {
     let label = 'Name: A to Z'
     switch (this.sortOrder) {
+      case 'updatedAtAsc':
+        label = 'New to Old';
+      break;
+      case 'updatedAtDesc':
+        label = 'Old to New';
+      break;
       case 'nameAsc':
         label = 'Name: A to Z';
       break;
@@ -192,7 +210,10 @@ export class ItemsComponent {
       tap(() => this.loading$.next(true)),
       switchMap((page) => this.api.getItems$(this.params, page)),
       scan(this.updatePaginator, {items: [], page: 0, hasMorePages: true} as ItemsPaginator),
-      tap(() => this.loading$.next(false)),
+      tap(() => {
+        this.loading$.next(false);
+        this.expandStockDetail = {};
+      }),
     );
   }
 
@@ -224,23 +245,29 @@ export class ItemsComponent {
         label: 'Update Price',
         icon: 'pi pi-refresh',
         command: () => this.updateItemPriceAction(event, item, index)
-      },
-      {
-        label: 'Receive Stock',
-        icon: 'pi pi-plus',
-        command: () => this.receiveStockAction(event, item, index)
-      },
-      {
-          label: 'Update',
-          icon: 'pi pi-refresh',
-          command: () => this.updateAction(event, item, index)
-      },
-      {
-          label: 'Delete',
-          icon: 'pi pi-times',
-          command: () => this.deleteAction(event, item, index)
       }
     ]
+
+    if (this.userHasPermission('manage-stock')) {
+      this.actionItems = [
+        ...this.actionItems,
+        {
+          label: 'Receive Stock',
+          icon: 'pi pi-plus',
+          command: () => this.receiveStockAction(event, item, index)
+        },
+        {
+            label: 'Update Item',
+            icon: 'pi pi-refresh',
+            command: () => this.updateAction(event, item, index)
+        },
+        {
+            label: 'Delete Item',
+            icon: 'pi pi-times',
+            command: () => this.deleteAction(event, item, index)
+        }
+      ];
+    }
   }
 
   updateAction(event: MouseEvent, item: any, index: number) {
@@ -378,10 +405,12 @@ export class ItemsComponent {
     this.api.addItemPrice$(itemId, data).subscribe({
       next: (response) => {
         this.showItemPriceUpdateDialog = false;
+        this.selectedItem['latestPrice'] = this.selectedItem?.latestPrice ?? {};
+        this.selectedItem.latestPrice['salePrice'] = data.salePrice;
         this.selectedItem = null;
         console.log('Update successful', response);
-        this.page$.next(1);
-        window.scrollTo(0, 0); 
+        // this.page$.next(1);
+        // window.scrollTo(0, 0); 
       },
       error: (error) => {
         console.error('Update failed', error);
@@ -608,7 +637,7 @@ export class ItemsComponent {
   }
 
   get currencyCode() {
-    return this.userSettings?.currency ?? '€'; //€
+    return this.userSettings?.currency ?? 'EUR'; //€
   }
 
 }

@@ -1,0 +1,22 @@
+{
+    "NAV_BAR": {
+        "DASHBOARD": "Dashboard",
+        "DOCUMENTS": "Documents",
+        "INVOICE": "Invoice",
+        "PROPOSALS": "Proposals",
+        "BILL": "Bill",
+        "MANAGEMENT": "Management",
+        "CUSTOMER_LIST": "Customer List",
+        "ITEM_LIST": "Item List",
+        "MY_REPORTS": "My Reports",
+        "SETTINGS": "Settings",
+        "LOGOUT": "Logout"
+    },
+    "DASHBOARD": {
+        "CONTACT_US_MSG": "Contact Us: Quick, Easy Support Awaits!",
+        "REACH_OUT_NOW": "Reach Out Now",
+        "MSG": "Data to enrich your online business",
+        "MSG2":"Boost your online business with engaging, targeted copy that drives sales and builds brand loyalty",
+        "LEARN_MORE": "Learn more"
+    }
+}

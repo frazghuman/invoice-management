@@ -26,7 +26,9 @@ export class AuthService {
   removeTokens(): void {
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
-  }getAccessToken() {
+  }
+  
+  getAccessToken() {
     if (typeof window !== 'undefined') {
       return localStorage.getItem(this.accessTokenKey);
     }
@@ -62,12 +64,13 @@ export class AuthService {
         catchError(error => {
           // Handle the error and redirect to /auth/sign-in
           this.router.navigate(['/auth/sign-in']);
-          return throwError(error);
+          return throwError(() => new Error(error));
         })
       );
   }
 
   isAuthenticated(): boolean {
+    this.accessToken = this.getAccessToken()
     // Check if the access token exists and is not expired
     return !!this.accessToken && !this.isTokenExpired();
   }

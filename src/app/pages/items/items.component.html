@@ -1,6 +1,8 @@
 <p-toast position="top-right"></p-toast>
 <p-confirmDialog></p-confirmDialog>
-<app-page-header [heading]="'Item list'" [heading2]="'Items'" [buttonLabel]="'Item'" (addClick)="onAddItem($event)"></app-page-header>
+<app-page-header [heading]="'Item list'" [heading2]="'Items'" [buttonLabel]="'Item'" (addClick)="onAddItem($event)"
+ [showActionButton]="userHasPermission('manage-stock')"
+></app-page-header>
 <app-confirm-dialog [showDialog]="showItemUpdateDialog" (hide)="onHideUpdateDialog($event)" [title]="!selectedItem ? 'Add Item' : 'Update Item'">
     <app-item-form
     [data]="selectedItem"
@@ -129,18 +131,22 @@
                             <div class="shrink-0 w-28 sm:flex sm:flex-col sm:items-start ml-4">
                                 <p class="text-xs font-semibold leading-6 text-zinc-800">Available Stock</p>
                             </div>
-                            <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
-                                <p class="text-xs font-semibold leading-6 text-zinc-800">Price</p>
-                            </div>
+                            @if(userHasPermission('read-item-purchase-price')) {
+                                <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
+                                    <p class="text-xs font-semibold leading-6 text-zinc-800">Purchase Price</p>
+                                </div>
+                            }
                             <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
                                 <p class="text-xs font-semibold leading-6 text-zinc-800">Stock Date</p>
                             </div>
                             <div class="shrink-0 w-80 sm:flex sm:flex-col sm:items-start ml-4">
                                 <p class="text-xs font-semibold leading-6 text-zinc-800">Additional Information</p>
                             </div>
-                            <div class="shrink-0 w-16 sm:flex sm:flex-col sm:items-start ml-4">
-                                <p class="text-xs font-semibold leading-6 text-zinc-800">Actions</p>
-                            </div>
+                            @if(userHasPermission('manage-stock')) {
+                                <div class="shrink-0 w-16 sm:flex sm:flex-col sm:items-start ml-4">
+                                    <p class="text-xs font-semibold leading-6 text-zinc-800">Actions</p>
+                                </div>
+                            }
                         </div>
                         @for (inventory of item?.inventories; track $index) {
                             <div class="flex w-full flex-row justify-start items-center mx-6 border-b-2 border-zinc-200">
@@ -156,9 +162,11 @@
                                 <div class="shrink-0 w-28 sm:flex sm:flex-col sm:items-start ml-4">
                                     <p class="mt-1 text-xs leading-5 text-gray-800"><span class="font-semibold">{{ inventory.totalStock - (inventory.soldOutStock ?? 0) }}</span></p>
                                 </div>
-                                <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
-                                    <p class="mt-1 text-xs leading-5 text-gray-800">{{ inventory?.purchasePrice | customCurrency: currencyCode }}</p>
-                                </div>
+                                @if(userHasPermission('read-item-purchase-price')) {
+                                    <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
+                                        <p class="mt-1 text-xs leading-5 text-gray-800">{{ inventory?.purchasePrice | customCurrency: currencyCode }}</p>
+                                    </div>
+                                }
                                 <div class="shrink-0 w-20 sm:flex sm:flex-col sm:items-start ml-4">
                                     <p class="mt-1 truncate text-xs leading-5 text-gray-800">{{inventory?.stockReceivedDate | date:'mediumDate'}}</p>
                                 </div>
@@ -167,12 +175,14 @@
                                         <p class="w-[22rem] max-w-full mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="inventory?.description" [limit]="45"></p>
                                     }
                                 </div>
-                                <div class="shrink-0 w-16 sm:flex sm:flex-col sm:items-start ml-4">
-                                    <div class="mt-1 truncate text-xs leading-5 text-gray-800">
-                                        <i (click)="updateReceivedStockAction($event, item, inventory)" class="material-icons action cursor-pointer mr-4">edit</i>
-                                        <i (click)="deleteInventoryStockAction($event, item, inventory)" class="material-icons action cursor-pointer">delete</i>
+                                @if(userHasPermission('manage-stock')) {
+                                    <div class="shrink-0 w-16 sm:flex sm:flex-col sm:items-start ml-4">
+                                        <div class="mt-1 truncate text-xs leading-5 text-gray-800">
+                                            <i (click)="updateReceivedStockAction($event, item, inventory)" class="material-icons action cursor-pointer mr-4">edit</i>
+                                            <i (click)="deleteInventoryStockAction($event, item, inventory)" class="material-icons action cursor-pointer">delete</i>
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         } @empty {
                             <div class="flex w-full flex-row justify-center items-center mx-6 border-b-2 border-zinc-200">
@@ -184,9 +194,12 @@
                     </div>
                 </li>
             } @empty {
-                <div class="flex w-full flex-row justify-center items-center mx-6">
-                    <p class="text-xs font-semibold leading-6 text-zinc-800 text-center">
-                        No items found!
+                <div class="flex w-full flex-col justify-center items-center mx-6 h-[50vh]">
+                    <span class="material-icons text-9xl">
+                        receipt_long
+                    </span>
+                    <p class="text-2xl font-semibold leading-6 text-zinc-800 text-center">
+                        No item found!
                     </p>
                 </div>
             }

@@ -7,7 +7,7 @@
     (cancelEvent)="onHideCompanySelectionDialog($event)"
 ></app-general-settings>
 </app-confirm-dialog>
-<button (click)="toggleSidebar()" data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" class=" z-30 fixed inline-flex items-center p-2 mt-3 ms-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 ">
+<button (click)="toggleSidebar()" data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" class=" z-30 fixed inline-flex items-center p-2 mt-3 ms-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 hover:border-b-2 focus:outline-none focus:ring-2 focus:ring-gray-200 ">
     <span class="sr-only">Open sidebar</span>
     <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
     <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
@@ -22,90 +22,127 @@
                     <img class="w-full h-auto" [src]="userSettings?.userImage ? completeUrl(userSettings?.userImage) : userSettings?.user?.image ? completeUrl(userSettings?.user?.image) : 'https://i.stack.imgur.com/l60Hf.png'" alt="">
                 </div>
                 <div class="min-w-0 flex-auto">
-                    <p class="flex justify-between text-sm font-semibold leading-6 text-gray-900">{{userSettings?.userName ? userSettings?.userName : userSettings?.user?.name}}
-                        <a class="cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
+                    <p class="flex justify-between text-sm font-semibold leading-6 text-gray-900 max-w-full">
+                        <span class="w-4/5 truncate" >
+                            {{userSettings?.userName ? userSettings?.userName : userSettings?.user?.name}}
+                        </span>
+                        <a class="w-1/5 cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
                             (click)="onEdit('language')">
-                            <i class="text-xs material-icons">language</i>
+                            <i class="text-xs material-icons">translate</i>
                         </a>
                     </p>
-                    <p class="flex justify-between mt-1 truncate text-xs leading-5 text-gray-500">{{userSettings?.company?.name}}
-                        <a class="cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
+                    <p class="flex justify-between mt-1 truncate text-xs leading-5 text-gray-500 max-w-full">
+                        <span class="w-4/5 truncate" [pTooltip]="userSettings?.company?.name" tooltipPosition="top" >{{userSettings?.company?.name}}</span>
+                        <a class="w-1/5 cursor-pointer inline-flex items-center text-sm font-medium text-gray-700 ml-3"
                             (click)="onEdit('company')">
                             <i class="text-xs material-icons">edit</i>
                         </a>
                     </p>
                 </div>
             </div>
-            <ul class="space-y-2 font-medium">
-                <li>
-                   <a [routerLink]="'/dashboard'" class="flex items-center p-2 cursor-pointer text-gray-900 rounded-lg hover:bg-gray-100 group">
-                      <app-svg-icon [icon]="'dashboard'"></app-svg-icon>
-                      <span class="ms-3">Dashboard</span>
-                   </a>
-                </li>
-             </ul>
-             <div class="mt-4">
-              <h6 class="font-semibold text-xs uppercase opacity-65">Documents</h6>
-             </div>
-             <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200">
-                <li>
-                    <a [routerLink]="'/invoice'" class="flex items-center p-2 cursor-pointer text-gray-900 rounded-lg  hover:bg-gray-100 group">
-                        <app-svg-icon [icon]="'invoice'"></app-svg-icon>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Invoice</span>
-                        <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span>
-                    </a>
-                </li>
-                <li>
-                    <a [routerLink]="'/proposals'" class="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100  group">
-                        <app-svg-icon [icon]="'proposals'"></app-svg-icon>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Proposals</span>
-                        <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span>
-                    </a>
-                </li>
-                <li>
-                    <a [routerLink]="'/bill'" class="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100  group">
-                        <app-svg-icon [icon]="'bill'"></app-svg-icon>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Bill</span>
-                        <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span>
-                    </a>
-                </li>
-             </ul>
-             <div class="mt-4">
-              <h6 class="font-semibold text-xs uppercase opacity-65">Management</h6>
-             </div>
-             <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 ">
-                <li>
-                    <a [routerLink]="'/customers'" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100   group">
-                        <app-svg-icon [icon]="'customers'"></app-svg-icon>
-                        <span class="ms-3">Customer list</span>
-                    </a>
-                </li>
-                <li>
-                   <a [routerLink]="'/items'" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100   group">
-                      <app-svg-icon [icon]="'items'"></app-svg-icon>
-                      <span class="ms-3">Item list</span>
-                   </a>
-                </li>
-                <li>
-                    <a [routerLink]="'/reports'" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100   group">
-                        <app-svg-icon [icon]="'reports'"></app-svg-icon>
-                        <span class="ms-3">My reports</span>
-                    </a>
-                </li>
-             </ul>
+            @if(userHasPermission('items-management')) {
+                <ul class="space-y-2 font-medium">
+                    <li>
+                       <a [routerLink]="'/'" [routerLinkActive]="['bg-gray-100']" [routerLinkActiveOptions]="{ exact: true }"
+                            class="flex items-center p-2 cursor-pointer text-gray-900 rounded-lg hover:bg-gray-100 hover:border-b-2 group">
+                          <app-svg-icon [icon]="'dashboard'"></app-svg-icon>
+                          <span class="ms-3">{{'NAV_BAR.DASHBOARD' | translate}}</span>
+                       </a>
+                    </li>
+                 </ul>
+            }
+            @if(
+                userHasPermission('invoices-management') || 
+                userHasPermission('proposals-management') || 
+                userHasPermission('bills-management')
+            ) {
+                <div class="mt-4">
+                 <h6 class="font-semibold text-xs uppercase opacity-65">{{'NAV_BAR.DOCUMENTS' | translate}}</h6>
+                </div>
+                <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200">
+                    @if(userHasPermission('invoices-management')) {
+                        <li>
+                            <a [routerLink]="'/invoice'" [routerLinkActive]="['bg-gray-100']" class="flex items-center p-2 cursor-pointer text-gray-900 rounded-lg  hover:bg-gray-100 hover:border-b-2 group">
+                                <app-svg-icon [icon]="'invoice'"></app-svg-icon>
+                                <span class="flex-1 ms-3 whitespace-nowrap">{{'NAV_BAR.INVOICE' | translate}}</span>
+                                <!-- <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span> -->
+                            </a>
+                        </li>
+                    }
+                    @if(userHasPermission('proposals-management')) { 
+                        <li>
+                            <a [routerLink]="'/proposals'" [routerLinkActive]="['bg-gray-100']" class="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 hover:border-b-2  group">
+                                <app-svg-icon [icon]="'proposals'"></app-svg-icon>
+                                <span class="flex-1 ms-3 whitespace-nowrap">{{'NAV_BAR.PROPOSALS' | translate}}</span>
+                                <!-- <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span> -->
+                            </a>
+                        </li>
+                    }
+                    @if(userHasPermission('bills-management')) { 
+                        <li>
+                            <a [routerLink]="'/bill'" [routerLinkActive]="['bg-gray-100']" class="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 hover:border-b-2  group">
+                                <app-svg-icon [icon]="'bill'"></app-svg-icon>
+                                <span class="flex-1 ms-3 whitespace-nowrap">{{'NAV_BAR.BILL' | translate}}</span>
+                                <!-- <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full ">3</span> -->
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            @if(
+                userHasPermission('customers-management') || 
+                userHasPermission('items-management') || 
+                userHasPermission('reports-management')
+            ) {
+                <div class="mt-4">
+                 <h6 class="font-semibold text-xs uppercase opacity-65">{{'NAV_BAR.MANAGEMENT' | translate}}</h6>
+                </div>
+                <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 ">
+                    @if(userHasPermission('customers-management')) {
+                        <li>
+                            <a [routerLink]="'/customers'" [routerLinkActive]="['bg-gray-100']" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 hover:border-b-2   group">
+                                <app-svg-icon [icon]="'customers'"></app-svg-icon>
+                                <span class="ms-3">{{'NAV_BAR.CUSTOMER_LIST' | translate}}</span>
+                            </a>
+                        </li>
+                    }
+                    @if(userHasPermission('items-management')) {
+                        <li>
+                           <a [routerLink]="'/items'" [routerLinkActive]="['bg-gray-100']" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 hover:border-b-2   group">
+                              <app-svg-icon [icon]="'items'"></app-svg-icon>
+                              <span class="ms-3">{{'NAV_BAR.ITEM_LIST' | translate}}</span>
+                           </a>
+                        </li>
+                    }
+                    @if(userHasPermission('reports-management')) {
+                        <li>
+                            <a [routerLink]="'/reports'" [routerLinkActive]="['bg-gray-100']" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 hover:border-b-2   group">
+                                <app-svg-icon [icon]="'reports'"></app-svg-icon>
+                                <span class="ms-3">{{'NAV_BAR.MY_REPORTS' | translate}}</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
         </div>
         <div>
             <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 ">
+                @if(
+                    userHasPermission('manage-general-info') ||
+                    userHasPermission('manage_users') ||
+                    userHasPermission('manage-companies')
+                ) {
+                    <li>
+                        <a [routerLink]="'/settings'" [routerLinkActive]="['bg-gray-100']" class="flex items-center p-2 text-gray-900 rounded-lg cursor-pointer  hover:bg-gray-100 hover:border-b-2  group">
+                            <app-svg-icon [icon]="'settings'"></app-svg-icon>
+                            <span class="flex-1 ms-3 whitespace-nowrap">{{'NAV_BAR.SETTINGS' | translate}}</span>
+                        </a>
+                    </li>
+                }
                 <li>
-                    <a [routerLink]="'/settings'" class="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100  group">
-                        <app-svg-icon [icon]="'settings'"></app-svg-icon>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Settings</span>
-                    </a>
-                </li>
-                <li>
-                    <a (click)="logout()" class="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100  group">
+                    <a (click)="logout()" class="flex items-center p-2 text-gray-900 rounded-lg cursor-pointer  hover:bg-gray-100 hover:border-b-2  group">
                         <app-svg-icon [icon]="'logout'"></app-svg-icon>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Logout</span>
+                        <span class="flex-1 ms-3 whitespace-nowrap">{{'NAV_BAR.LOGOUT' | translate}}</span>
                     </a>
                 </li>
              </ul>

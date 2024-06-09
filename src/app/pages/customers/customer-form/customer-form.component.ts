@@ -22,8 +22,8 @@ export class CustomerFormComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.customerForm = this.formBuilder.group({
       name: ['', Validators.required],
-      phone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      phone: [''],
+      email: [''],
       businessName: [''],
       cif: [''],
       nif: [''],

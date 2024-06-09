@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT, Location } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, CreateEffectOptions, Inject, OnInit, effect, inject } from '@angular/core';
 import { PageHeaderComponent } from '@common/components/layout/page-header/page-header.component';
 import { UsersManagementPaginator } from '@common/interfaces/user-management.interface';
 import { UserManagementService } from '@common/services/user-management/user-management.service';
@@ -19,6 +19,10 @@ import { UserFormComponent } from './user-form/user-form.component';
 import { serverUrl } from '@environment';
 import { ToastWrapperModule } from '@common/shared/toast.module';
 import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
+import { SettingsService } from '@common/services/settings/settings.service';
+import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
+import { Router } from '@angular/router';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-user-management',
@@ -34,7 +38,8 @@ import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module
     ConfirmDialogComponent,
     UserFormComponent,
     ShowMoreDirective,
-    CustomCapitalizePipe
+    CustomCapitalizePipe,
+    TooltipModule
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
@@ -44,6 +49,10 @@ export class UserManagementComponent implements OnInit {
   private api = inject(UserManagementService);
   private messageService: MessageService = inject(MessageService);
   private confirmationService: ConfirmationService = inject(ConfirmationService);
+  private settingsService: SettingsService = inject(SettingsService);
+  private dataSharingService: DataSharingService = inject(DataSharingService);
+  
+  private location: Location = inject(Location);
 
   public paginator$: Observable<UsersManagementPaginator>;
   private searchSubject = new Subject<string>();
@@ -65,8 +74,19 @@ export class UserManagementComponent implements OnInit {
   expandUserManagementDetail: any = {};
 
   serverBaseUrl = serverUrl;
-  constructor() {
+  userSettings!: any;
+  constructor(
+    @Inject(DOCUMENT) private document: Document
+  ) {
     this.paginator$ = this.loadUsers$();
+
+    const options: CreateEffectOptions = {
+      allowSignalWrites: true
+    };
+    // Use effect to react to signal changes
+    effect(() => {
+      this.userSettings = this.dataSharingService.userSettings();
+    }, options);
   }
 
   ngOnInit(): void {
@@ -161,24 +181,28 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteAction(user: any, index: number) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this company?',
-      header: 'Delete Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-          if (user._id) {
-            console.log('Accepted');
-            this.deleteUser(user._id);
-          }
-      },
-      reject: () => {
-          console.log('Rejected');
-      },
-      acceptLabel: 'Yes',
-      rejectLabel: 'No',
-      rejectButtonStyleClass: 'mr-4 mt-3 inline-flex w-full justify-center rounded-md text-white px-3 py-2 text-sm font-semibold bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:text-gray-900 sm:mt-0 sm:w-auto',
-      acceptButtonStyleClass: 'mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-800 hover:text-gray-50 sm:mt-0 sm:w-auto'
-    });
+    if (user?._id === this.userSettings?.user?._id) {
+      this.showError('Unauthorized Access Error', 'You are not permitted to delete the currently logged-in user.');
+    } else {
+      this.confirmationService.confirm({
+        message: 'Are you sure you want to delete this company?',
+        header: 'Delete Confirmation',
+        icon: 'pi pi-info-circle',
+        accept: () => {
+            if (user._id) {
+              console.log('Accepted');
+              this.deleteUser(user._id);
+            }
+        },
+        reject: () => {
+            console.log('Rejected');
+        },
+        acceptLabel: 'Yes',
+        rejectLabel: 'No',
+        rejectButtonStyleClass: 'mr-4 mt-3 inline-flex w-full justify-center rounded-md text-white px-3 py-2 text-sm font-semibold bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:text-gray-900 sm:mt-0 sm:w-auto',
+        acceptButtonStyleClass: 'mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-800 hover:text-gray-50 sm:mt-0 sm:w-auto'
+      });
+    }
   }
 
   private loadUsers$(): Observable<UsersManagementPaginator> {
@@ -225,11 +249,39 @@ export class UserManagementComponent implements OnInit {
           command: () => this.deleteAction(userManagement, index)
       }
     ]
+
+    if (!userManagement.verified) {
+      this.actionItems = [
+        {
+          label: 'Activation Link',
+          icon: 'pi pi-copy',
+          command: () => this.copyActivationLink(userManagement._id)
+        },
+        ...this.actionItems
+      ];
+    }
   }
 
   onAddUserManagement(event: any) {
     console.log(event)
     this.showUpdateDialog = true;
+  }
+
+  getBaseUrl(): string {
+    const location = this.document.location;
+    return `${location.protocol}//${location.hostname}${location.port ? ':' + location.port : ''}`;
+  }
+
+  copyActivationLink(userIdObject: string) {
+    this.api.copyActivationLink$(userIdObject).subscribe({
+      next: (linkToCopy: string) => {
+        this.copyToClipboard(`${this.getBaseUrl()}/activate/${linkToCopy}`);
+      },
+      error: (error) => {
+        console.error('Update failed', error);
+        this.handleError(error);
+      }
+    });
   }
 
   onSubmit(formData: any) {
@@ -316,5 +368,23 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
+  copyToClipboard(linkToCopy: string) : void {
+    navigator.clipboard.writeText(linkToCopy)
+    .then(() => {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Link copied to clipboard'
+      });
+    })
+    .catch(err => {
+      console.error('Failed to copy: ', err);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Failed to copy',
+        detail: err
+      });
+    });
+  }
 
 }

@@ -86,7 +86,13 @@
                     </div>
                     <div class="hidden shrink-0 w-28 sm:flex sm:flex-col sm:items-start">
                         <p class="text-sm leading-6 text-gray-900">Status</p>
-                        <p class="mt-1 text-xs leading-5 text-gray-500">{{ user.verified ? 'Active' : 'InActive' }} </p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500">
+                            @if(user.verified) {
+                                Active
+                            } @else {
+                                InActive <span class="pi pi-copy cursor-pointer" [pTooltip]="'Copy Activation Link'" (click)="copyActivationLink(user._id)" ></span>
+                            }
+                        </p>
                     </div>
                     <div class="ml-4">
                         <span (click)="generateMenuItems($event, user, i);menu.toggle($event)" class="material-icons material-symbols-outlined cursor-pointer rounded-lg">more_vert</span>
