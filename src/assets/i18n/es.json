@@ -1,0 +1,22 @@
+{
+    "NAV_BAR": {
+        "DASHBOARD": "Panel de control",
+        "DOCUMENTS": "Documentos",
+        "INVOICE": "Albran",
+        "PROPOSALS": "Propuestas",
+        "BILL": "Factura",
+        "MANAGEMENT": "Gestión",
+        "CUSTOMER_LIST": "Lista de clientes",
+        "ITEM_LIST": "Lista de elementos",
+        "MY_REPORTS": "Mis informes",
+        "SETTINGS": "Configuración",
+        "LOGOUT": "Cerrar sesión"
+    },
+    "DASHBOARD": {
+        "CONTACT_US_MSG": "Contáctenos: ¡Le espera soporte rápido y fácil!",
+        "REACH_OUT_NOW": "Comuníquese ahora",
+        "MSG": "Datos para enriquecer tu negocio online",
+        "MSG2":"Impulse su negocio en línea con textos atractivos y específicos que impulsen las ventas y generen lealtad a la marca",
+        "LEARN_MORE": "Más información"
+    }
+}

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, CreateEffectOptions, effect, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, CreateEffectOptions, effect, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { SvgIconComponent } from '../svg-icon/svg-icon.component';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { BackdropService } from '@common/services/signals/backdrop.service';
 import { AuthService } from '@common/services/auth/auth.service';
 import { SettingsService } from '@common/services/settings/settings.service';
@@ -13,6 +13,8 @@ import { ToastWrapperModule } from '@common/shared/toast.module';
 import { MessageService } from 'primeng/api';
 import { TooltipModule } from 'primeng/tooltip';
 import { BaseComponent } from '../base/base.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-side-nav',
@@ -24,22 +26,30 @@ import { BaseComponent } from '../base/base.component';
     SvgIconComponent,
     ConfirmDialogComponent,
     GeneralSettingsComponent,
-    TooltipModule
+    TooltipModule,
+    TranslateModule
   ],
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.scss'
 })
-export class SideNavComponent extends BaseComponent implements OnInit {
+export class SideNavComponent extends BaseComponent implements OnInit, OnDestroy {
   backDropService = inject(BackdropService);
   messageService = inject(MessageService);
+  translate: TranslateService = inject(TranslateService);
   showSideBar: boolean = false;
   showCompanySelectionDialog: boolean = false;
   userSettings: any;
   serverBaseUrl: any = serverUrl;
   fieldName!: string;
+  routerEventsSubscription: Subscription;
   toggleSidebar() {
     this.showSideBar = !this.showSideBar;
     this.backDropService.set('visible', this.showSideBar);
+  }
+
+  language = {
+    "English": "en",
+    "Spanish": "es"
   }
 
   constructor(
@@ -58,7 +68,31 @@ export class SideNavComponent extends BaseComponent implements OnInit {
       if (this.userSettings && !this.userSettings?.company) {
         this.onEdit('company');
       }
+      if (this.userSettings?.language) {
+        let selectedLanguage: string;
+        switch (this.userSettings?.language) {
+          case 'English':
+            selectedLanguage = 'en';
+            break;
+          case 'Spanish':
+              selectedLanguage = 'es';
+              break;
+        
+          default:
+            selectedLanguage = 'en';
+            break;
+        }
+
+        this.translate.setDefaultLang(selectedLanguage);
+      }
     }, options);
+
+    this.routerEventsSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.showSideBar = false;
+        this.backDropService.set('visible', this.showSideBar);
+      }
+    });
   }
 
   ngOnInit() {
@@ -102,9 +136,14 @@ export class SideNavComponent extends BaseComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response) {
-            this.settingsService.getUserSettings$().subscribe();
-            this.showMessage('Success', 'Updated Successfully.', 'success')
+            this.settingsService.getUserSettings$().subscribe(() => {
+              if (this.fieldName === 'company') {
+                this.showMessage('Success', 'Company Updated.', 'success')
+                this.router.navigate(['/'])
+              }
+            });
             this.showCompanySelectionDialog = false;
+            
           }
         },
         error: (error) => {
@@ -134,5 +173,9 @@ export class SideNavComponent extends BaseComponent implements OnInit {
         this.showError(error, message);
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.routerEventsSubscription.unsubscribe();
   }
 }

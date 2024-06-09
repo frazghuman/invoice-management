@@ -3,5 +3,7 @@
     <div class="fixed top-4 right-4" *ngIf="waiting">
         <div class="loader"></div>
     </div>
-    <router-outlet></router-outlet>
+    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <router-outlet></router-outlet>
+    </div>
 </div>

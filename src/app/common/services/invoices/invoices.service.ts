@@ -14,20 +14,21 @@ export class InvoicesService  extends BaseService {
     super();
   }
 
-  public getInvoices$(page: number = 1, InvoicesPerPage: number = 16): Observable<InvoicesPaginator> {
+  public getInvoices$(params: any, page: number = 1, InvoicesPerPage: number = 16): Observable<InvoicesPaginator> {
     return this.http.get<InvoicesJsonResponse>(
-      'https://dummyjson.com/carts',
+      '/invoices',
       {
         params: {
           limit: InvoicesPerPage,
-          skip: InvoicesPerPage * (page - 1)
+          skip: InvoicesPerPage * (page - 1),
+          ...params
         }
       }
     )
     .pipe(
       map((response: any) => {
         return {
-          invoices: response.carts,
+          invoices: response.invoices,
           ...response
         }
       })
@@ -39,5 +40,35 @@ export class InvoicesService  extends BaseService {
         hasMorePages: response.skip + response.limit < response.total
       } as InvoicesPaginator))
     );
+  }
+
+  public createInvoice$(createData: any): Observable<any> {
+    return this.http.post(`/invoices`, createData)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public updateInvoice$(invoiceObjectId: string, createData: any): Observable<any> {
+    return this.http.put(`/invoices/${invoiceObjectId}`, createData)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
+  }
+
+  public getInvoice$(invoiceObjectId: string): Observable<any> {
+    return this.http.get(`/invoices/${invoiceObjectId}`)
+      .pipe(
+        map(response => {
+          // Process the response if needed
+          return response;
+        })
+      );
   }
 }

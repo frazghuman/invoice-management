@@ -1,4 +1,4 @@
-<nav class="fixed pl-14 lg:pl-68 w-full top-0 left-0 flex justify-between px-4 py-4 items-center bg-white z-20">
+<nav class="fixed pl-14 lg:pl-68 w-full top-0 left-0 flex justify-between px-4 py-4 pb-5 items-center bg-white z-20 border-b-2">
     <div class="flex flex-row w-3/4">
         <h1 class="sm:pl-0 sm:mr-12 text-xl text-gray-800 font-bold"><span class="hidden lg:block text-nowrap">{{heading}}</span><span class="lg:hidden text-nowrap">{{heading2}}</span></h1>
     </div>
@@ -6,7 +6,7 @@
         <a *ngIf="showActionButton" (click)="onAddClick()" class="cursor-pointer inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-900 py-1 px-3 text-white hover:bg-zinc-700 " ><span>{{buttonLabel}}</span> <span class="material-icons">add</span></a>
     </div>
 </nav>
-<div class="fixed w-full top-0 left-0  mt-16 inset-x-0 h-px transition bg-zinc-900 opacity-15"></div>
+<div class="fixed w-full top-0 left-0  mt-16 inset-x-0 h-px transition bg-zinc-900 opacity-15 Z-30"></div>
 <div class="flex items-center justify-end my-4 mx-12">
     <ul class="flex items-center space-x-6">
       <li class="font-semibold text-gray-700">

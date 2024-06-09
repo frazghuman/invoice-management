@@ -637,7 +637,7 @@ export class ItemsComponent extends BaseComponent {
   }
 
   get currencyCode() {
-    return this.userSettings?.currency ?? '€'; //€
+    return this.userSettings?.currency ?? 'EUR'; //€
   }
 
 }

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, CreateEffectOptions, effect, inject, OnInit } from '@angular/core';
 import { PageHeaderComponent } from '@common/components/layout/page-header/page-header.component';
 import { InvoicesPaginator } from '@common/interfaces/invoices.interface';
 import { InvoicesService } from '@common/services/invoices/invoices.service';
@@ -9,10 +9,13 @@ import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
-import { BehaviorSubject, Observable, scan, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, debounceTime, Observable, scan, Subject, switchMap, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CustomCurrencyPipe } from '@common/pipes/custom-currency.pipe';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
+import { CurrencyService } from '@common/services/currency/currency.service';
 
 @Component({
   selector: 'app-invoice',
@@ -26,7 +29,8 @@ import { CustomCurrencyPipe } from '@common/pipes/custom-currency.pipe';
     DropdownModule,
     FormsModule,
     PageHeaderComponent,
-    CustomCurrencyPipe
+    CustomCurrencyPipe,
+    InputNumberModule
   ],
   templateUrl: './invoice.component.html',
   styleUrl: './invoice.component.scss'
@@ -34,8 +38,12 @@ import { CustomCurrencyPipe } from '@common/pipes/custom-currency.pipe';
 export class InvoiceComponent implements OnInit {
   private api = inject(InvoicesService);
   private router = inject(Router);
+  private dataSharingService = inject(DataSharingService);
+  private currencyService = inject(CurrencyService);
+  userSettings!: any;
 
   public paginator$!: Observable<InvoicesPaginator>;
+  private searchSubject = new Subject<string>();
 
   public loading$ = new BehaviorSubject(true);
   private page$ = new BehaviorSubject(1);
@@ -46,12 +54,13 @@ export class InvoiceComponent implements OnInit {
   selectedInvoice: any;
 
   sortOptions!: MenuItem[];
+  private params: any = {};
 
   options = [
     {label: 'Customer', value: 'customer'},
-    {label: 'Issued Date', value: 'issuedDate'},
+    {label: 'Issued Date', value: 'date'},
     {label: 'Due Date', value: 'dueDate'},
-    {label: 'Amount', value: 'amount'}
+    {label: 'Amount', value: 'amountDue'}
     // Add more options as needed
   ];
 
@@ -61,6 +70,16 @@ export class InvoiceComponent implements OnInit {
 
   constructor() {
     this.paginator$ = this.loadInvoices$();
+
+    this.params['searchField'] = this.selectedOption.value;
+
+    const options: CreateEffectOptions = {
+      allowSignalWrites: true
+    };
+    // Use effect to react to signal changes
+    effect(() => {
+      this.userSettings = this.dataSharingService.userSettings();
+    }, options);
   }
 
   ngOnInit() {
@@ -76,6 +95,31 @@ export class InvoiceComponent implements OnInit {
       { label: 'Amount: Low to High', icon: 'pi pi-sort-amount-down', command: () => this.sort('amountAsc') },
       { label: 'Amount: High to Low', icon: 'pi pi-sort-amount-up', command: () => this.sort('amountDesc') }
     ];
+
+    this.searchSubject.pipe(
+      debounceTime(700)  // Wait for 300ms pause in events
+    ).subscribe(searchText => {
+      console.log('Search query:', searchText);
+      this.params['search'] = searchText;
+
+      console.log('searchParams', this.params);
+      this.page$.next(1);
+      window.scrollTo(0, 0); 
+    });
+  }
+
+  onSearch(event: KeyboardEvent | null = null): void {
+    if (this.selectedOption.value === 'amountDue' && !this.searchValue) {
+      this.searchValue = '';
+    }
+    if (event && this.selectedOption.value === 'customer') {
+      const inputElement = event.target as HTMLInputElement;
+      this.searchSubject.next(inputElement.value.trim());  // Emit the trimmed value
+    } if (event && this.selectedOption.value === 'amountDue') {
+      this.searchSubject.next(this.searchValue);  // Emit the trimmed value
+    } else {
+      this.searchSubject.next(this.searchValue);  // Emit the trimmed value
+    }
   }
 
   sort(criteria: string) {
@@ -86,7 +130,7 @@ export class InvoiceComponent implements OnInit {
   private loadInvoices$(): Observable<InvoicesPaginator> {
     return this.page$.pipe(
       tap(() => this.loading$.next(true)),
-      switchMap((page) => this.api.getInvoices$(page)),
+      switchMap((page) => this.api.getInvoices$(this.params, page)),
       scan(this.updatePaginator, {invoices: [], page: 0, hasMorePages: true} as InvoicesPaginator),
       tap(() => this.loading$.next(false)),
     );
@@ -138,7 +182,7 @@ export class InvoiceComponent implements OnInit {
     // Your update logic here
     console.log('Update action triggered'+index, invoice);
     this.selectedInvoice = invoice;
-    this.navigateToInvoice(invoice.id);
+    this.navigateToEditInvoice(invoice._id);
   }
 
   deleteAction(event: MouseEvent, invoice: any, index: number) {
@@ -158,7 +202,8 @@ export class InvoiceComponent implements OnInit {
   onSearchClick() {}
 
   onFilterChange(event: any) {
-    this.searchValue = null;
+    this.searchValue = undefined;
+    this.params['searchField'] = this.selectedOption.value;
   }
 
   onAddItem(event: any) {
@@ -168,6 +213,17 @@ export class InvoiceComponent implements OnInit {
   navigateToInvoice(invoiceId: string | number): void {
     // Navigate to the invoice detail route with the given id
     this.router.navigate(['/invoice', invoiceId]);
+  }
+
+  navigateToEditInvoice(id: string): void {
+    this.router.navigate([`/invoice/${id}/edit`]);
+  }
+
+  get currencySymbol() {
+    if (this.userSettings?.currency) {
+      return this.currencyService.getCurrencySymbol(this.userSettings.currency)
+    }
+    return '€';
   }
 
 }
