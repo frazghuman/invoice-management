@@ -368,23 +368,54 @@ export class UserManagementComponent implements OnInit {
     }
   }
 
-  copyToClipboard(linkToCopy: string) : void {
-    navigator.clipboard.writeText(linkToCopy)
-    .then(() => {
+  copyToClipboard(text: string) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Link copied to clipboard'
+        });
+        console.log('Text copied to clipboard');
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed to copy',
+          detail: err
+        });
+      });
+    } else {
+      this.fallbackCopyTextToClipboard(text);
+    }
+  }
+  
+  fallbackCopyTextToClipboard(text: string) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+  
+    // Avoid scrolling to bottom
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.position = 'fixed';
+  
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+  
+    try {
+      document.execCommand('copy');
+      console.log('Fallback: Text copied to clipboard');
       this.messageService.add({
         severity: 'success',
         summary: 'Success',
         detail: 'Link copied to clipboard'
       });
-    })
-    .catch(err => {
-      console.error('Failed to copy: ', err);
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Failed to copy',
-        detail: err
-      });
-    });
+    } catch (err) {
+      console.error('Fallback: Failed to copy text to clipboard', err);
+    }
+  
+    document.body.removeChild(textArea);
   }
 
 }
