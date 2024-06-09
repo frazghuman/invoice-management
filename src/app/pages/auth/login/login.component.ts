@@ -4,12 +4,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '@common/services/auth/auth.service';
 import { LoaderService } from '@common/services/loader/loader.service';
+import { ToastWrapperModule } from '@common/shared/toast.module';
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, ToastWrapperModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })

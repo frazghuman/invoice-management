@@ -95,9 +95,9 @@
                             @for (item of proposal.items; track $index) {
                                 <tr>
                                     <td class="p-5 print:p-1 text-wrap text-base print:text-sm font-medium border lg:w-[42.8571%] print:w-[42.8571%]"><span class="text-sm">{{$index + 1}}.</span> <span>{{item.item.name}} ({{item.item.baseUnitOfMeasure}})</span></td>
-                                    <td class="p-5 print:p-1 text-wrap text-base print:text-sm font-medium border text-center lg:w-[14.2857%] print:w-[14.2857%]">{{item.price | customCurrency: currencyCode}}</td>
-                                    <td class="p-5 print:p-1 text-wrap text-base print:text-sm font-medium border text-center lg:w-[14.2857%] print:w-[14.2857%]">{{item.quantity}}</td>
-                                    <td class="p-5 print:p-1 text-wrap text-base print:text-sm font-medium border text-center lg:w-[28.5714%] print:w-[28.5714%]">{{(item.price * item.quantity) | customCurrency: currencyCode}}</td>
+                                    <td class="p-5 print:p-1 text-wrap text-base print:text-sm font-medium border text-center lg:w-[14.2857%] print:w-[14.2857%] tabular-nums">{{item.price | customCurrency: currencyCode}}</td>
+                                    <td class="p-5 print:p-1 text-wrap text-base print:text-sm font-medium border text-center lg:w-[14.2857%] print:w-[14.2857%] tabular-nums">{{item.quantity}}</td>
+                                    <td class="p-5 print:p-1 text-wrap text-base print:text-sm font-medium border text-center lg:w-[28.5714%] print:w-[28.5714%] tabular-nums">{{(item.price * item.quantity) | customCurrency: currencyCode}}</td>
                                 </tr>
                             }
                             <tr>
@@ -115,23 +115,23 @@
                                 </td>
                                 <td class="flex flex-row justify-center p-5 print:py-1 print:px-2 text-base font-medium border text-center bg-gray-100 ">
                                     <div class="flex justify-end w-1/2"><b class="mr-2">Subtotal:</b></div>
-                                    <div class="flex justify-start w-1/2"><span>{{proposal.subTotal | customCurrency: currencyCode}}</span></div>
+                                    <div class="flex justify-start w-1/2"><span class="tabular-nums">{{proposal.subTotal | customCurrency: currencyCode}}</span></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="flex flex-row justify-center p-5 print:py-1 print:px-2 text-base font-medium border text-center bg-gray-100 ">
                                     <div class="flex justify-end w-1/2"><b class="mr-2">Discount:</b></div>
-                                    <div class="flex justify-start w-1/2"><span>{{proposal.discount | customCurrency: currencyCode}}</span></div>
+                                    <div class="flex justify-start w-1/2"><span class="tabular-nums">{{proposal.discount | customCurrency: currencyCode}}</span></div>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="flex flex-row justify-center p-5 print:py-1 print:px-2 text-base font-medium border text-center bg-gray-100 ">
                                     <div class="flex justify-end w-1/2"><b class="mr-2">Shipping:</b></div>
-                                    <div class="flex justify-start w-1/2"><span>{{proposal.shippingCharges | customCurrency: currencyCode}}</span></div>
+                                    <div class="flex justify-start w-1/2"><span class="tabular-nums">{{proposal.shippingCharges | customCurrency: currencyCode}}</span></div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="4" class="p-5 print:p-1 text-base font-medium border text-end"><b class="mr-2">Total:</b> <span>{{proposal.amountDue | customCurrency: currencyCode}}</span></td>
+                                <td colspan="4" class="p-5 print:p-1 text-base font-medium border text-end"><b class="mr-2">Total:</b> <span class="tabular-nums">{{proposal.amountDue | customCurrency: currencyCode}}</span></td>
                             </tr>
                         </tbody>
                     </table>

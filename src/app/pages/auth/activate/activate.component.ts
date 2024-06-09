@@ -61,13 +61,19 @@ export class ActivateComponent implements OnInit {
           this.activationForm.get('email')?.patchValue(this.user.email);
         } else {
           this.showError('Not Found', 'User not found or has been deleted.');
-          this.router.navigate(['not-found']);
+          // Redirect to 'not-found' after showing the error
+          setTimeout(() => {
+            this.router.navigate(['not-found']);
+          }, 3000); // Adjust the delay as needed (e.g., 3000ms = 3 seconds)
         }
       },
       error: (error) => {
         console.error('Error fetching user by activation key:', error);
         this.handleError(error);
-        this.router.navigate(['not-found']);
+        // Redirect to 'not-found' after showing the error
+        setTimeout(() => {
+          this.router.navigate(['not-found']);
+        }, 3000); // Adjust the delay as needed (e.g., 3000ms = 3 seconds)
       }
     });
   }

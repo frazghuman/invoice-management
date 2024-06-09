@@ -58,6 +58,7 @@ export class InvoiceComponent implements OnInit {
 
   options = [
     {label: 'Customer', value: 'customer'},
+    // {label: 'Invoice No', value: '_id'},
     {label: 'Issued Date', value: 'date'},
     {label: 'Due Date', value: 'dueDate'},
     {label: 'Amount', value: 'amountDue'}
