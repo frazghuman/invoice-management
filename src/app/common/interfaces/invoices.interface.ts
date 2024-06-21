@@ -57,6 +57,7 @@ export interface InvoiceItem {
 
 export interface Invoice {
   _id: string;
+  invoiceNumber: number;
   isSent: boolean;
   customer: Customer;
   company: Company;

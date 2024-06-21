@@ -87,6 +87,7 @@ export class ItemsComponent extends BaseComponent {
   showStockReceivingDialog: boolean = false;
   selectedStockLot!: any;
   selectedItemId!: string | null;
+  nextLotNo!: number;
   
   constructor(protected override authService: AuthService) {
     super(authService);
@@ -283,14 +284,20 @@ export class ItemsComponent extends BaseComponent {
   receiveStockAction(event: MouseEvent, item: any, index: number) {
     event.stopPropagation();
     event.preventDefault();
-
-    this.showStockReceivingDialog = true;
     // Your update logic here
     console.log('Update action triggered'+index, item);
     this.selectedItem = item;
     this.selectedItemId = this.selectedItem._id;
 
     this.selectedStockLot = null;
+
+    if (this.selectedItemId) {
+      this.inventoryService.largestLotNo$(this.selectedItemId).subscribe(largestLotNo => {
+        this.nextLotNo = largestLotNo + 1;
+        this.showStockReceivingDialog = true;
+      })
+    }
+
   }
 
   updateItemPriceAction(event: MouseEvent, item: any, index: number) {

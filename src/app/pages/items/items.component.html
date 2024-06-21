@@ -24,13 +24,14 @@
     [data]="selectedStockLot"
     [itemId] = "selectedItemId"
     [selectedItem] = "selectedItem"
+    [nextLotNo] = "nextLotNo"
     (submitEvent)="onStockReceiveSubmit($event)"
     (cancelEvent)="onStockReceiveCancel($event)"
     ></app-receive-stock-form>
 </app-confirm-dialog>
 
 <div class="custom-page-container w-full flex justify-center">
-    <div class="my-4 lg:px-4 mt-16 flex flex-col  w-full justify-center">
+    <div class="my-4 lg:px-8 mt-16 flex flex-col w-full justify-center">
         <div class="flex flex-col sm:flex-row w-full items-center justify-between">
             <div class="flex h-10 items-center pl-4 lg:mr-2 lg:w-auto w-full p-2">
                 <span class="text-sm font-semibold uppercase mr-2 text-nowrap">Sort By:</span>
@@ -175,7 +176,7 @@
                                         <p class="w-[22rem] max-w-full mt-1 text-xs leading-5 text-gray-800" appShowMore [fullText]="inventory?.description" [limit]="45"></p>
                                     }
                                 </div>
-                                @if(userHasPermission('manage-stock')) {
+                                @if(userHasPermission('manage-stock') && !inventory?.inUse) {
                                     <div class="shrink-0 w-16 sm:flex sm:flex-col sm:items-start ml-4">
                                         <div class="mt-1 truncate text-xs leading-5 text-gray-800">
                                             <i (click)="updateReceivedStockAction($event, item, inventory)" class="material-icons action cursor-pointer mr-4">edit</i>

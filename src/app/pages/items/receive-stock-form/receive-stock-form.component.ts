@@ -23,6 +23,7 @@ export class ReceiveStockFormComponent implements OnInit, OnChanges {
   @Input() data!: any;
   @Input() itemId!: any;
   @Input() selectedItem!: any;
+  @Input() nextLotNo!: number;
   @Output() submitEvent = new EventEmitter<any>();
   @Output() cancelEvent = new EventEmitter<any>();
 
@@ -66,20 +67,23 @@ export class ReceiveStockFormComponent implements OnInit, OnChanges {
     } else {
       this.resetForm();
     }
-    
+
     if (changes['itemId'] && !changes['itemId'].firstChange && changes['itemId'].currentValue) {
       const itemId = changes['itemId'].currentValue;
       console.log('changes: ', changes['itemId'].currentValue);
-      this.receiveStockForm.get('lotNo')?.setValue(null);
-      this.receiveStockForm.get('lotNo')?.disable();
       this.receiveStockForm.get('item')?.setValue(itemId);
-      // this.priceAdjustmentForm.patchValue(price);
-      this.inventoryService.largestLotNo$(itemId).subscribe(largestLotNo => {
-        console.log('largestLotNo', largestLotNo);
-        this.updateMinLotNoValidator(largestLotNo + 1);
-        this.receiveStockForm.get('lotNo')?.setValue(largestLotNo + 1);
-        this.receiveStockForm.get('lotNo')?.enable();
-      })
+    }
+    
+    if (changes['nextLotNo'] && !changes['nextLotNo'].firstChange && changes['nextLotNo'].currentValue) {
+      const nextLotNo = changes['nextLotNo'].currentValue;
+      console.log('changes: nextLotNo ', nextLotNo);
+      this.updateMinLotNoValidator(nextLotNo);
+      this.receiveStockForm.get('lotNo')?.setValue(nextLotNo);
+      this.receiveStockForm.get('lotNo')?.enable();
+
+      if(!!this.itemId && !this.receiveStockForm.get('item')?.value) {
+        this.receiveStockForm.get('item')?.setValue(this.itemId);
+      }
 
     }
   }

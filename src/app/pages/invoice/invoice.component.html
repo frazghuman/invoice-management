@@ -74,9 +74,9 @@
                                 ({{ invoice?.customer?.businessName }})
                             }
                         </p>
-                        <p class="hidden sm:block mt-1 truncate text-xs leading-5 text-gray-500">#{{ invoice._id.slice(-4) }}</p>
+                        <p class="hidden sm:block mt-1 truncate text-xs leading-5 text-gray-500">#{{invoice.invoiceNumber}}</p>
                         <p class="sm:hidden flex justify-between mt-1 truncate text-xs leading-5 text-gray-500">
-                            <span>#{{ invoice._id.slice(-4) }}</span>
+                            <span>#{{invoice.invoiceNumber}}</span>
                             <span>Saved</span>
                             <span class="font-semibold">{{ invoice.amountDue | customCurrency }}</span>
                         </p>

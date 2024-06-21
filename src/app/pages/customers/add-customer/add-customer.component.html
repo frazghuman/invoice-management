@@ -1,0 +1,8 @@
+<app-confirm-dialog [showDialog]="showCustomerDialog" (hide)="onToggleCustomerDialog($event)" 
+    [title]="'Add Customer'">
+    <app-customer-form
+    (submitEvent)="onSubmit($event)"
+    (cancelEvent)="onCancel($event)"
+    ></app-customer-form>
+</app-confirm-dialog>
+<a class="flex items-center justify-center cursor-pointer" (click)="onToggleCustomerDialog(true)"><span class="material-icons">add</span></a>

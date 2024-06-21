@@ -7,17 +7,20 @@ import { CurrencyService } from '@common/services/currency/currency.service';
 import { CustomersService } from '@common/services/customers/customers.service';
 import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
 import { ItemsService } from '@common/services/items/items.service';
-import { MessageService, SelectItem } from 'primeng/api';
+import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TooltipModule } from 'primeng/tooltip';
-import { debounceTime, Subject, Subscription, takeUntil } from 'rxjs';
+import { debounceTime, Observable, of, Subject, Subscription, takeUntil } from 'rxjs';
 import { serverUrl } from '@environment';
 import { InvoicesService } from '@common/services/invoices/invoices.service';
 import { ToastWrapperModule } from '@common/shared/toast.module';
 import { Invoice, InvoiceItem } from '@common/interfaces/invoices.interface';
+import { Customer } from '@common/interfaces/customers.interface';
+import { AddCustomerComponent } from '@pages/customers/add-customer/add-customer.component';
+import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
 
 @Component({
   selector: 'app-invoice-edit',
@@ -25,6 +28,7 @@ import { Invoice, InvoiceItem } from '@common/interfaces/invoices.interface';
   imports: [
     CommonModule,
     PageHeaderComponent,
+    AddCustomerComponent,
     RouterLink,
     RouterLinkActive,
     DropdownModule,
@@ -34,7 +38,8 @@ import { Invoice, InvoiceItem } from '@common/interfaces/invoices.interface';
     ReactiveFormsModule,
     FormsModule,
     TooltipModule,
-    ToastWrapperModule
+    ToastWrapperModule,
+    ConfirmDialogWrapperModule
   ],
   templateUrl: './invoice-edit.component.html',
   styleUrls: ['./invoice-edit.component.scss']
@@ -47,6 +52,7 @@ export class InvoiceEditComponent {
   private itemsService = inject(ItemsService);
   private invoicesService = inject(InvoicesService);
   private messageService: MessageService = inject(MessageService);
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -61,13 +67,11 @@ export class InvoiceEditComponent {
   serverBaseUrl = serverUrl;
   invoice!: Invoice;
 
+  hasUnsavedChanges: boolean = false; // Set this flag based on actual unsaved changes logic
+
   constructor() {
     this.customers = [];
     this.items = [];
-    for (let i = 0; i < 10000; i++) {
-      this.customers.push({ label: 'Customer ' + i, value: 'Customer ' + i });
-      this.items.push({ label: 'Item ' + i, value: { id: i, price: i * 2.5 } });
-    }
 
     const options: CreateEffectOptions = {
       allowSignalWrites: true
@@ -76,6 +80,30 @@ export class InvoiceEditComponent {
     effect(() => {
       this.userSettings = this.dataSharingService.userSettings();
     }, options);
+  }
+
+  // This method will be called by the guard
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    if (this.hasUnsavedChanges) {
+      return new Promise((resolve) => {
+        this.confirmationService.confirm({
+          message: 'You have unsaved changes. Do you really want to discard them?',
+          header: 'Unsaved Changes',
+          icon: 'pi pi-info-circle',
+          accept: () => {
+            resolve(true);
+          },
+          reject: () => {
+            resolve(false);
+          },
+          acceptLabel: 'Discard',
+          rejectLabel: 'Cancel',
+          rejectButtonStyleClass: 'mr-4 mt-3 inline-flex w-full justify-center rounded-md text-white px-3 py-2 text-sm font-semibold bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:text-gray-900 sm:mt-0 sm:w-auto',
+          acceptButtonStyleClass: 'mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-800 hover:text-gray-50 sm:mt-0 sm:w-auto'
+        });
+      });
+    }
+    return true;
   }
 
   ngOnInit() {
@@ -95,6 +123,7 @@ export class InvoiceEditComponent {
 
     // Subscribe to form changes to calculate totals
     this.invoiceForm.valueChanges.subscribe(() => {
+      this.hasUnsavedChanges = true;
       this.updateTotals();
     });
 
@@ -110,11 +139,7 @@ export class InvoiceEditComponent {
 
     this.customersService.createCustomersList$().subscribe(resp => {
       this.customers = resp.map((customer: any) => {
-        return {
-          label: `${customer?.name} ${customer?.businessName ? 'Business:' : ''} ${customer?.businessName} ${customer?.nif ? 'NIF:' : ''} ${customer?.nif} ${customer?.cif ? 'CIF:' : ''} ${customer?.cif}`,
-          value: customer._id,
-          customer
-        };
+        return this.customerToListItemMapping(customer);
       });
     });
 
@@ -137,6 +162,19 @@ export class InvoiceEditComponent {
     });
   }
 
+  onCustomerAdded(customer: Customer) {
+    this.customers.push(this.customerToListItemMapping(customer));
+    this.invoiceForm.get('customer')?.patchValue(customer._id);
+  }
+
+  customerToListItemMapping(customer: Customer) {
+    return {
+      label: `${customer?.name} ${customer?.businessName ? 'Business:' : ''} ${customer?.businessName} ${customer?.nif ? 'NIF:' : ''} ${customer?.nif} ${customer?.cif ? 'CIF:' : ''} ${customer?.cif}`,
+      value: customer._id,
+      customer
+    };
+  }
+
   getInvoiceById(invoiceObjectId: string) {
     this.invoicesService.getInvoice$(invoiceObjectId).subscribe({
       next: (response) => {
@@ -148,6 +186,7 @@ export class InvoiceEditComponent {
         })
 
         this.invoiceForm.patchValue(this.transformInvoiceToFormData(this.invoice));
+        this.hasUnsavedChanges = false;
       },
       error: (error) => {
         if (error?.status === 404) {
@@ -170,8 +209,8 @@ export class InvoiceEditComponent {
         price: item.price,
         quantity: item.quantity
       })),
-      discount: invoice.discount.toString(),
-      shippingCharges: invoice.shippingCharges.toString(),
+      discount: invoice?.discount?.toString(),
+      shippingCharges: invoice?.shippingCharges?.toString(),
       amountDue: invoice.amountDue,
       note: invoice.note || ''
     };
@@ -291,6 +330,7 @@ export class InvoiceEditComponent {
       next: (response) => {
         if (response?._id) {
           const { _id } = response;
+          this.hasUnsavedChanges = false;
           this.navigateToInvoice(_id);
         }
       },

@@ -22,7 +22,7 @@
                   <li aria-current="page">
                     <div class="flex items-center">
                       <i class="material-icons">navigate_next</i>
-                      <span class="ms-1 text-sm font-medium text-gray-500 lg:ms-2 ">{{invoiceId?.slice(-4)}}</span>
+                      <span class="ms-1 text-sm font-medium text-gray-500 lg:ms-2 ">{{invoice.invoiceNumber}}</span>
                     </div>
                   </li>
                 </ol>
@@ -75,7 +75,7 @@
                         </h4>
                     </div>
                     <div class="flex flex-col items-end border-s border-gray-900 ps-8">
-                        <p class="text-base font-semibold print:text-sm print:font-bold flex justify-between w-52"><span>Invoice #</span> <span class="ps-10 text-sm">{{invoice._id.slice(-4)}}</span></p>
+                        <p class="text-base font-semibold print:text-sm print:font-bold flex justify-between w-52"><span>Invoice #</span> <span class="ps-10 text-sm">{{invoice.invoiceNumber}}</span></p>
                         <p class="text-base font-semibold print:text-sm print:font-bold flex justify-between w-52"><span>Date: </span> <span class="ps-10 text-sm">{{ invoice.date | date:userSettings?.dateFormat ?? ''}}</span></p>
                         <p class="text-base font-semibold print:text-sm print:font-bold flex justify-between w-52"><span>Due Date: </span> <span class="ps-10 text-sm">{{ invoice.dueDate| date:userSettings?.dateFormat ?? ''}}</span></p>
                     </div>

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@common/guards/auth.guard';
+import { UnsavedChangesGuard } from '@common/guards/unsaved-changes.guard';
 
 export const routes: Routes = [
     {
@@ -28,6 +29,7 @@ export const routes: Routes = [
             import('@pages/invoice/invoice-create/invoice-create.component')
                 .then(m => m.InvoiceCreateComponent),
           canActivate: [AuthGuard] // Requires authentication
+          ,canDeactivate: [UnsavedChangesGuard]
         },
         { 
           path: 'invoice/:id',
@@ -42,6 +44,7 @@ export const routes: Routes = [
             import('@pages/invoice/invoice-edit/invoice-edit.component')
                 .then(m => m.InvoiceEditComponent),
           canActivate: [AuthGuard] // Requires authentication
+          ,canDeactivate: [UnsavedChangesGuard]
         },
         { 
           path: 'proposals',

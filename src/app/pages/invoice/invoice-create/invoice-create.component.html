@@ -1,4 +1,5 @@
 <p-toast position="top-right"></p-toast>
+<p-confirmDialog></p-confirmDialog>
 <app-page-header class="print:hidden" [heading]="'Invoice'" [heading2]="'Invoice'" [showActionButton]="false"></app-page-header>
 <div class="print:hidden mt-12 flex flex-col sm:flex-row w-full justify-between">
     <div class="m-4 flex flex-col justify-center">
@@ -42,7 +43,7 @@
                 <div class="flex flex-col lg:flex-row items-start justify-between my-10">
                     <div class="w-full">
                         <span class="text-lg font-bold">Bill to:</span>
-                        <div class="w-full">
+                        <div class="w-full flex items-center gap-2">
                             <p-dropdown 
                                 formControlName="customer"
                                 class="custom-input-class"
@@ -69,6 +70,7 @@
                                     {{ selectedItem?.customer?.name }} @if(selectedItem?.customer?.businessName) {({{ selectedItem?.customer?.businessName }})}
                                 </ng-template>
                             </p-dropdown>
+                            <app-add-customer (customerAdded)="onCustomerAdded($event)"></app-add-customer>
                         </div>
                     </div>
                     <div class="flex flex-col items-end w-full">

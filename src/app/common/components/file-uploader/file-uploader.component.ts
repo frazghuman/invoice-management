@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { ToastWrapperModule } from '@common/shared/toast.module';
 import { serverUrl } from '@environment';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-file-uploader',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ToastWrapperModule],
   templateUrl: './file-uploader.component.html',
   styleUrl: './file-uploader.component.scss'
 })
@@ -14,7 +16,8 @@ export class FileUploaderComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @Input() imageUrl: string = '';
   @Output() uploadCompleted = new EventEmitter<string>();
-  private http: HttpClient = inject(HttpClient)
+  private http: HttpClient = inject(HttpClient);
+  private messageService: MessageService = inject(MessageService);
   isDragOver = false;
   isLoading = false;
 
@@ -78,8 +81,8 @@ export class FileUploaderComponent {
 
     this.http.post(uploadUrl, formData).subscribe({
       next: (response: any) => {
-        const { fileUrl } = response.data;
-        this.imageUrl = fileUrl;
+        const { url, id } = response;
+        this.imageUrl = url;
         this.isLoading = false;
         this.uploadCompleted.emit(this.imageUrl); // Emit the URL or response from the server
       },
@@ -87,12 +90,15 @@ export class FileUploaderComponent {
         this.isLoading = false;
         this.resetFileInput();
         console.error('Upload error:', error);
+        this.handleError(error);
       }
     });
   }
 
   resetFileInput(): void {
-    this.fileInput.nativeElement.value = ''; // Reset the file input
+    if (this.fileInput?.nativeElement?.value) {
+      this.fileInput.nativeElement.value = ''; // Reset the file input
+    }
   }
 
   removeFile() {
@@ -102,5 +108,22 @@ export class FileUploaderComponent {
 
   get completeUrl() {
     return !this.imageUrl ? '' : (this.imageUrl.indexOf('http') !== -1 ? '' : this.serverBaseUrl) + this.imageUrl;
+  }
+
+  handleError(errorResp: any) {
+    if (errorResp?.error?.message) {
+      const { error, message } = errorResp?.error?.message;
+      if (error && message) {
+        this.showError(error, message);
+      }
+    }
+  }
+
+  showError(summary:string, detail: string) {
+    this.messageService.add({
+      severity: 'error',
+      summary: summary,
+      detail: detail
+    });
   }
 }

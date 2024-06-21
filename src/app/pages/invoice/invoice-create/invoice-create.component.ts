@@ -7,16 +7,19 @@ import { CurrencyService } from '@common/services/currency/currency.service';
 import { CustomersService } from '@common/services/customers/customers.service';
 import { DataSharingService } from '@common/services/data-sharing/data-sharing.service';
 import { ItemsService } from '@common/services/items/items.service';
-import { MessageService, SelectItem } from 'primeng/api';
+import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TooltipModule } from 'primeng/tooltip';
-import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { debounceTime, Observable, Subject, takeUntil } from 'rxjs';
 import { serverUrl } from '@environment';
 import { InvoicesService } from '@common/services/invoices/invoices.service';
 import { ToastWrapperModule } from '@common/shared/toast.module';
+import { AddCustomerComponent } from '@pages/customers/add-customer/add-customer.component';
+import { Customer } from '@common/interfaces/customers.interface';
+import { ConfirmDialogWrapperModule } from '@common/shared/confirm-dialog.module';
 
 @Component({
   selector: 'app-invoice-create',
@@ -24,6 +27,7 @@ import { ToastWrapperModule } from '@common/shared/toast.module';
   imports: [
     CommonModule,
     PageHeaderComponent,
+    AddCustomerComponent,
     RouterLink,
     RouterLinkActive,
     DropdownModule,
@@ -33,7 +37,8 @@ import { ToastWrapperModule } from '@common/shared/toast.module';
     ReactiveFormsModule,
     FormsModule,
     TooltipModule,
-    ToastWrapperModule
+    ToastWrapperModule,
+    ConfirmDialogWrapperModule
   ],
   templateUrl: './invoice-create.component.html',
   styleUrls: ['./invoice-create.component.scss']
@@ -46,6 +51,7 @@ export class InvoiceCreateComponent {
   private itemsService = inject(ItemsService);
   private invoicesService = inject(InvoicesService);
   private messageService: MessageService = inject(MessageService);
+  private confirmationService: ConfirmationService = inject(ConfirmationService);
   private router = inject(Router);
 
   customers!: SelectItem[];
@@ -55,14 +61,11 @@ export class InvoiceCreateComponent {
   userSettings!: any;
 
   serverBaseUrl = serverUrl;
+  hasUnsavedChanges: boolean = false; // Set this flag based on actual unsaved changes logic
 
   constructor() {
     this.customers = [];
     this.items = [];
-    for (let i = 0; i < 10000; i++) {
-      this.customers.push({ label: 'Customer ' + i, value: 'Customer ' + i });
-      this.items.push({ label: 'Item ' + i, value: { id: i, price: i * 2.5 } });
-    }
 
     const options: CreateEffectOptions = {
       allowSignalWrites: true
@@ -71,6 +74,30 @@ export class InvoiceCreateComponent {
     effect(() => {
       this.userSettings = this.dataSharingService.userSettings();
     }, options);
+  }
+
+  // This method will be called by the guard
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    if (this.hasUnsavedChanges) {
+      return new Promise((resolve) => {
+        this.confirmationService.confirm({
+          message: 'You have unsaved changes. Do you really want to discard them?',
+          header: 'Unsaved Changes',
+          icon: 'pi pi-info-circle',
+          accept: () => {
+            resolve(true);
+          },
+          reject: () => {
+            resolve(false);
+          },
+          acceptLabel: 'Discard',
+          rejectLabel: 'Cancel',
+          rejectButtonStyleClass: 'mr-4 mt-3 inline-flex w-full justify-center rounded-md text-white px-3 py-2 text-sm font-semibold bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:text-gray-900 sm:mt-0 sm:w-auto',
+          acceptButtonStyleClass: 'mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-800 hover:text-gray-50 sm:mt-0 sm:w-auto'
+        });
+      });
+    }
+    return true;
   }
 
   ngOnInit() {
@@ -90,6 +117,7 @@ export class InvoiceCreateComponent {
 
     // Subscribe to form changes to calculate totals
     this.invoiceForm.valueChanges.subscribe(() => {
+      this.hasUnsavedChanges = true;
       this.updateTotals();
     });
 
@@ -105,11 +133,7 @@ export class InvoiceCreateComponent {
 
     this.customersService.createCustomersList$().subscribe(resp => {
       this.customers = resp.map((customer: any) => {
-        return {
-          label: `${customer?.name} ${customer?.businessName ? 'Business:' : ''} ${customer?.businessName} ${customer?.nif ? 'NIF:' : ''} ${customer?.nif} ${customer?.cif ? 'CIF:' : ''} ${customer?.cif}`,
-          value: customer._id,
-          customer
-        };
+        return this.customerToListItemMapping(customer);
       });
     });
 
@@ -122,6 +146,19 @@ export class InvoiceCreateComponent {
         };
       });
     });
+  }
+
+  onCustomerAdded(customer: Customer) {
+    this.customers.push(this.customerToListItemMapping(customer));
+    this.invoiceForm.get('customer')?.patchValue(customer._id);
+  }
+
+  customerToListItemMapping(customer: Customer) {
+    return {
+      label: `${customer?.name} ${customer?.businessName ? 'Business:' : ''} ${customer?.businessName} ${customer?.nif ? 'NIF:' : ''} ${customer?.nif} ${customer?.cif ? 'CIF:' : ''} ${customer?.cif}`,
+      value: customer._id,
+      customer
+    };
   }
 
   ngOnDestroy() {
